@@ -9,8 +9,12 @@
     <VBoxLayout>
         <TaskArea></TaskArea>
         <EventArea></EventArea>
+        <!-- <EventArea --gt-row-height="1.3em"></EventArea> -->
     </VBoxLayout>
 <!-- </div> -->
 
 <style>
+    :global(:root) {
+        --gt-row-height: 1.3em
+    }
 </style>

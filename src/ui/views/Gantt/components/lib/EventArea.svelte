@@ -13,7 +13,7 @@
 
 <!-- <div class="hBoxLayout event-area"> -->
  <!-- <div class="event-area"> -->
-  <HBoxLayout>
+  <HBoxLayout className="event-area">
 
       <div class="header">
           {#each { length: 30 } as _, day}
@@ -22,7 +22,7 @@
         </div>
 	<div class="event-graph">
         {#each $tasks as task}
-        <div class="event" style="top:{task.top}em; width:6em"></div>
+        <div class="event" style="top:{task.top}em; width:6em">EVENT</div>
 		{/each}
 	</div>
 </HBoxLayout>
@@ -34,6 +34,7 @@
 		/* display: table-cell; */
 		position: absolute;
 		height: var(--gt-row-height);
+		/* height: 1.3em;  */
 		margin-top: 0.4em;
 	}
 

@@ -38,7 +38,8 @@
 	}
 
 	.gt-task {
-		height: var(--gt-row-height);
+		height: 1.6em;
+		/* height: var(--gt-row-height); */
 		background-color: blueviolet;
 		border-radius: 0.25em;
 		margin: 0.125em;

@@ -1,3 +1,7 @@
+<script>
+    export let className="";
+</script>
+
 <style>
 .hBoxLayout {
     display: flex;
@@ -5,6 +9,6 @@
 }
 </style>
 
-<div class="hBoxLayout">
+<div class="hBoxLayout {className}">
     <slot></slot>
 </div>
