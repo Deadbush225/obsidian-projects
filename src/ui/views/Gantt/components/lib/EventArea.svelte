@@ -22,7 +22,7 @@
         </div>
 	<div class="event-graph">
         {#each $tasks as task}
-        <div class="event" style="top:{task.top}em; width:6em">EVENT</div>
+        <div class="event" style="left:{task.left}em; top:{task.top}em; width:6em">{task.name}</div>
 		{/each}
 	</div>
 </HBoxLayout>
@@ -36,6 +36,7 @@
 		height: var(--gt-row-height);
 		/* height: 1.3em;  */
 		margin-top: 0.4em;
+        text-align: center;
 	}
 
 	.header {
@@ -45,6 +46,7 @@
 	.date {
 		display: block;
 		min-width: 2em;
+        text-align: center;
 	}
 
 	.event-area {

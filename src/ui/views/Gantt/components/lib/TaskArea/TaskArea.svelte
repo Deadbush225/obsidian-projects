@@ -4,6 +4,7 @@
 	import Header from "./Header.svelte";
 	import { tasks } from "../Stores/TasksStore.js";
     import HBoxLayout from "../../widgets/HBoxLayout.svelte";
+  import { left } from "fp-ts/lib/EitherT";
 
 	// /**
 	//  * @type {Writable<never[]>}
@@ -13,7 +14,7 @@
 	let rand = Math.random;
 
 	function addTask() {
-		$tasks = [...$tasks, { name: "test", top: $tasks.length * 2.05 }];
+		$tasks = [...$tasks, { name: "test", top: $tasks.length * 2.05, left: Math.floor(rand() * 20) * 2 }];
 	}
 </script>
 
@@ -44,6 +45,7 @@
 		border-radius: 0.25em;
 		margin: 0.125em;
 		margin-bottom: 0.25em;
-		padding: 0.15em 0 0.35em;
+		padding: 0.15em 0.4em 0 0;
+        line-height: 1.4;
 	}
 </style>
