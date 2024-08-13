@@ -56,9 +56,9 @@
 		min-width: 20vw;
 		width: 100%;
 		min-height: 50vh;
-		height: 100%;
+		height: 100vw;
 		position: relative;
-		overflow-y: hidden;
+		/* overflow-y: hidden; */
 		/* border: solid 1px black; */
 	}
 	.event-graph:last-child {
