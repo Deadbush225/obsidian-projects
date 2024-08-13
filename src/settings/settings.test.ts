@@ -106,6 +106,30 @@ const v1demo: v1.ProjectsPluginSettings<
           id: "64713d5a-683d-4f19-9cf9-d90dde311fc8",
           type: "gallery",
         },
+        {
+          config: {
+            fieldConfig: {
+              name: {
+                width: 360,
+              },
+              path: {
+                hide: true,
+              },
+            },
+          },
+          filter: {
+            conditions: [],
+          },
+          colors: {
+            conditions: [],
+          },
+          sort: {
+            criteria: [],
+          },
+          name: "Table TEST",
+          id: "0a53aff7-804d-466d-977d-444b9ca6d13a",
+          type: "table",
+        },
       ],
     },
   ],

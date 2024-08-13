@@ -111,7 +111,7 @@ export async function createDemoProject(vault: Vault) {
       },
       views: [
         Object.assign({}, DEFAULT_VIEW, {
-          name: "Table",
+          name: "Table TEST",
           id: uuidv4(),
           type: "table",
           config: tableConfig,
