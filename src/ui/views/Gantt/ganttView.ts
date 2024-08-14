@@ -4,11 +4,12 @@ import {
   type ProjectViewProps,
 } from "src/customViewApi";
 
-import TableViewSvelte from "./GanttView.svelte";
+// import TableViewSvelte from "./GanttView.svelte";
+import GanttViewSvelte from "./GanttView.svelte";
 import type { GanttConfig } from "./types";
 
 export class GanttView extends ProjectView<GanttConfig> {
-  view?: TableViewSvelte | null;
+  view?: GanttViewSvelte | null;
   props?: ProjectViewProps;
 
   getViewType(): string {
@@ -26,7 +27,7 @@ export class GanttView extends ProjectView<GanttConfig> {
   }
 
   async onOpen(props: ProjectViewProps<GanttConfig>) {
-    this.view = new TableViewSvelte({
+    this.view = new GanttViewSvelte({
       target: props.contentEl,
       props: {
         frame: { fields: [], records: [] },

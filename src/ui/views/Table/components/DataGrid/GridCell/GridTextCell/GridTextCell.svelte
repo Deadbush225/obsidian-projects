@@ -13,6 +13,11 @@
   export let colindex: number;
   export let selected: boolean;
 
+  $: {
+    console.log("value");
+    console.log(value);
+  }
+
   let edit: boolean = false;
 
   $: options =

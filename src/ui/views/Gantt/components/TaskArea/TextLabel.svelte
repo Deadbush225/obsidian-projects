@@ -2,18 +2,23 @@
   import { MarkdownRenderer } from "obsidian";
   import { app, view } from "src/lib/stores/obsidian";
   import { handleHoverLink } from "src/ui/views/helpers";
-  import { getContext } from "svelte";
+  //   import { getContext } from "svelte";
 
   export let value: string;
   export let richText: boolean = false;
+  export let sourcePath: string;
 
-  console.log("TextLabel");
-  console.log(value);
-
-  const sourcePath = getContext<string>("sourcePath") ?? "";
+  //   const sourcePath = getContext<string>("sourcePath") ?? "";
 
   function useMarkdown(node: HTMLElement, value: string) {
-    MarkdownRenderer.render($app, value, node, sourcePath, $view);
+    // console.log("TextLabel");
+    // console.log(value);
+    // console.log(typeof value);
+    // console.log(sourcePath);
+    // console.log(typeof sourcePath);
+
+    // MarkdownRenderer.render($app, value, node, sourcePath, $view);
+    MarkdownRenderer.render($app, sourcePath, node, value, $view);
 
     return {
       update(newValue: string) {
@@ -62,13 +67,13 @@
 {/if}
 
 <style>
-  div {
+  /* div {
     padding: 6px;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+  } */
 
   div :global(p:first-child) {
     margin-top: 0;

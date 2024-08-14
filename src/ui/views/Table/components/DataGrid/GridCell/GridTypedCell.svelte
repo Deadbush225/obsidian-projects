@@ -25,6 +25,11 @@
   export let rowindex: number;
   export let colindex: number;
   export let selected: boolean;
+
+  $: {
+    console.log("--------------");
+    console.log(value);
+  }
 </script>
 
 {#if column.repeated && isOptionalList(value)}
