@@ -12,3 +12,13 @@ export interface GanttConfig {
   readonly sortAsc?: boolean;
   readonly orderFields?: string[];
 }
+
+export interface CustomGridRowProps {
+  rowId: string;
+  row: any;
+}
+
+export interface MonthBlock {
+  monthYear: string;
+  daysRange: number[];
+}

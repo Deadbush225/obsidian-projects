@@ -1,6 +1,9 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import VBoxLayout from "../layout/VBoxLayout.svelte";
+  import HeaderDate from "./HeaderDate.svelte";
+
+  export let monthBlocks;
 
   const dispatch = createEventDispatcher();
 </script>
@@ -41,18 +44,14 @@
       >
     </div>
   </VBoxLayout>
-  <VBoxLayout id="events-header">
-    {#each { length: 60 } as _, day}
-      <div class="date">{day + 1}</div>
-    {/each}
-  </VBoxLayout>
+  <HeaderDate />
 </VBoxLayout>
 
 <!-- </div> -->
 
 <style>
   :global(.gantt-header) {
-    height: 30px;
+    /* height: 30px; */
   }
 
   :global(#tasks-header) {
@@ -66,17 +65,12 @@
 
     background-color: var(--background-secondary);
     border-right: 1px solid var(--background-modifier-border-focus);
+    border-bottom: 1px solid var(--background-modifier-border-focus);
     z-index: 4;
   }
 
   :global(#events-header) {
     display: flex;
-  }
-
-  .date {
-    display: block;
-    min-width: 2em;
-    text-align: center;
   }
 
   .gt-addTask {

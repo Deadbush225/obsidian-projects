@@ -5,34 +5,34 @@
     type DataRecord,
   } from "src/lib/dataframe/dataframe";
   //   import { createDataRecord } from "src/lib/dataApi";
-  import { i18n } from "src/lib/stores/i18n";
-  import { app } from "src/lib/stores/obsidian";
+  //   import { i18n } from "src/lib/stores/i18n";
+  //   import { app } from "src/lib/stores/obsidian";
   import type { ViewApi } from "src/lib/viewApi";
   //   import { CreateNoteModal } from "src/ui/modals/createNoteModal";
   //   import { EditNoteModal } from "src/ui/modals/editNoteModal";
 
-  import type {
-    GridColDef,
-    GridRowProps,
-  } from "./components/DataGrid/dataGrid";
+  //   import type {
+  //     GridColDef,
+  //     GridRowProps,
+  //   } from "./components/DataGrid/dataGrid";
   //   import DataGrid from "./components/DataGrid/DataGrid.svelte";
-  import SwitchSelect from "./components/SwitchSelect/SwitchSelect.svelte";
-  import type { TableConfig } from "./types";
+  //   import SwitchSelect from "./components/SwitchSelect/SwitchSelect.svelte";
+  import type { CustomGridRowProps, MonthBlock, GanttConfig } from "./types";
 
   import {
     ViewContent,
-    ViewHeader,
+    // ViewHeader,
     ViewLayout,
-    ViewToolbar,
+    // ViewToolbar,
   } from "src/ui/components/Layout";
   //   import { ConfigureFieldModal } from "src/ui/modals/configureField";
-  import { settings } from "src/lib/stores/settings";
-  import { sortFields } from "./helpers";
+  //   import { settings } from "src/lib/stores/settings";
+  //   import { sortFields } from "./helpers";
   import type { ProjectDefinition } from "src/settings/settings";
-  import { CreateFieldModal } from "src/ui/modals/createFieldModal";
+  //   import { CreateFieldModal } from "src/ui/modals/createFieldModal";
   //   import { Icon } from "obsidian-svelte";
   //   import { TextLabel } from "./components/DataGrid/GridCell/GridTextCell";
-  import { fieldIcon } from "../helpers";
+  //   import { fieldIcon } from "../helpers";
 
   export let project: ProjectDefinition;
   export let frame: DataFrame;
@@ -40,33 +40,32 @@
   export let api: ViewApi;
   export let getRecordColor: (record: DataRecord) => string | null;
 
-  export let config: TableConfig | undefined;
+  export let config: GanttConfig | undefined;
   export let onConfigChange: (cfg: TableConfig) => void;
 
   import Header from "./components/TaskArea/Header.svelte";
   //   import TaskArea from "./components/TaskArea/TaskArea.svelte";
   //   import EventArea from "./components/EventArea.svelte";
-  import HBoxLayout from "./components/layout/HBoxLayout.svelte";
-  import VBoxLayout from "./components/layout/VBoxLayout.svelte";
-  import InternalLink from "src/ui/components/InternalLink.svelte";
+  //   import HBoxLayout from "./components/layout/HBoxLayout.svelte";
+  //   import VBoxLayout from "./components/layout/VBoxLayout.svelte";
+  //   import InternalLink from "src/ui/components/InternalLink.svelte";
   import TextLabel from "./components/TaskArea/TextLabel.svelte";
   import EventRow from "./components/TaskArea/EventRow.svelte";
 
+  import { get } from "svelte/store";
+
+  import { daysPerMonth, monthFromIndex } from "./constants";
+  import { _range } from "./components/TaskArea/helper";
+  import { monthBlocks_store } from "./components/stores/stores";
+
   export let rows;
-
-  let buttonEl: HTMLElement;
-
-  function saveConfig(cfg: TableConfig) {
-    config = cfg;
-    onConfigChange(cfg);
-  }
 
   export function getFieldTypeByName(name: string): DataFieldType | undefined {
     const field = fields.find((field) => name === field.name);
     return field?.type;
   }
 
-  type GridRowId = string;
+  //   type GridRowId = string;
 
   $: ({ fields, records } = frame);
 
@@ -74,44 +73,93 @@
     rowId: id,
     row: values,
   }));
-  $: console.log(rows);
 
-  //   $: {
-  //     fields = sortFields(fields, config?.orderFields ?? []);
-  //   }
+  let currentDate: Date = new Date();
+  let daysViewLength = 0;
 
-  //   $: fieldConfig = config?.fieldConfig ?? {};
+  let endDate: Date = currentDate;
+  let monthBlocks: MonthBlock[] = get(monthBlocks_store);
+  //   let currentDay: number = currentDate.getDate();
+  let currentYear: number = currentDate.getFullYear();
 
-  //   $: columns = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+  //   let endDate: Date = new Date();
+  //   endDate.setDate(currentDate.getDate() + 70);
 
-  //   $: rows = records.map<GridRowProps>(({ id, values }) => ({
-  //     rowId: id,
-  //     row: values,
-  //   }));
+  $: endDate;
+
+  $: monthBlocks;
+
+  $: daysViewLength;
+
+  $: {
+    let pointer = currentDate;
+
+    let diffMonth = endDate.getMonth() - pointer.getMonth();
+    let diffYear = (endDate.getFullYear() - pointer.getFullYear()) * 12;
+    let diff = diffMonth + diffYear;
+
+    console.log(diff);
+
+    let i = 0;
+    while (i < diff) {
+      if (pointer.getTime() != endDate.getTime()) {
+        let currentMonth: number = pointer.getMonth();
+
+        let monthYear: string = `${monthFromIndex(
+          currentMonth
+        )} ${currentYear}`;
+        let days: number[] = _range(
+          pointer.getDate(),
+          daysPerMonth(currentMonth, false)
+        );
+
+        daysViewLength += days.length;
+        let block: MonthBlock = { monthYear: monthYear, daysRange: days };
+        monthBlocks.push(block);
+
+        console.log("MONTHBLOCK");
+        console.log(monthBlocks);
+
+        // increase month by 1
+        let month = pointer.getMonth();
+        if (month == 12) {
+          pointer.setFullYear(pointer.getFullYear() + 1);
+          pointer.setMonth(0);
+        } else {
+          pointer.setMonth(month + 1);
+        }
+        console.log("RESETING DATE");
+        pointer.setDate(1);
+      }
+
+      monthBlocks_store.set(monthBlocks);
+
+      i++;
+    }
+    // console.log("MATCH");
+  }
+
+  $: rows.forEach((row) => {
+    let rowDue: Date = row.row["due"];
+    if (!rowDue) {
+      return;
+    }
+
+    if (rowDue.getTime() > endDate.getTime()) {
+      console.log("REPLACING");
+      endDate = rowDue;
+    }
+    console.log(endDate);
+    // let due = row.row["due"]
+  });
 </script>
 
 <ViewLayout>
-  <ViewHeader>
-    <ViewToolbar variant="secondary">
-      <svelte:fragment slot="right">
-        <!-- <SwitchSelect
-          label={$i18n.t("views.table.hide-fields")}
-          items={columns.map((column) => ({
-            label: column.field,
-            icon: fieldIcon(column),
-            value: column.field,
-            enabled: !column.hide,
-          }))}
-          onChange={handleVisibilityChange}
-        /> -->
-      </svelte:fragment>
-    </ViewToolbar>
-  </ViewHeader>
   <ViewContent>
     <!-- <div class="vBoxLayout"> -->
     <Header />
     {#each rows as val, i}
-      <EventRow>
+      <EventRow {daysViewLength}>
         <TextLabel
           slot="task"
           value={val.rowId}
