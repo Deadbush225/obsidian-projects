@@ -1,4 +1,4 @@
-const perMonth: number[] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const perMonth: number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const monthsLongName = [
   "January",
   "February",
@@ -28,7 +28,9 @@ const monthsShortName = [
   "Dec",
 ];
 
-export function daysPerMonth(index: number, isLeapYear: boolean): number {
+export function daysPerMonth(index: number, year: number): number {
+  let isLeapYear = year % 4 == 0;
+
   if (isLeapYear && index == 1) {
     return 29;
   }

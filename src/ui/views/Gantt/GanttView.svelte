@@ -122,7 +122,7 @@
       let monthYear: string = `${monthFromIndex(currentMonth)} ${currentYear}`;
       let days: number[] = _range(
         pointer.getDate(),
-        daysPerMonth(currentMonth, false)
+        daysPerMonth(currentMonth, currentYear)
       );
 
       daysViewLength += days.length;
