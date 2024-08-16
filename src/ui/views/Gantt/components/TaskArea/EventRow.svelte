@@ -2,7 +2,8 @@
   import VBoxLayout from "../layout/VBoxLayout.svelte";
 
   // try to give id for each "block" div equal to the date (use for loop starting to the currrent day), then style bloaks
-  export let daysViewLength;
+  //   export let daysViewLength;
+  import { daysViewLength_store } from "../stores/stores";
 </script>
 
 <VBoxLayout>
@@ -11,7 +12,7 @@
   </div>
   <div class="event">
     <VBoxLayout>
-      {#each { length: daysViewLength } as _, day}
+      {#each { length: $daysViewLength_store } as _, day}
         <div class="block" />
       {/each}
     </VBoxLayout>

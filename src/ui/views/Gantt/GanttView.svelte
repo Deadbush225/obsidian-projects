@@ -56,7 +56,10 @@
 
   import { daysPerMonth, monthFromIndex } from "./constants";
   import { _range, daysFromNow } from "./components/TaskArea/helper";
-  import { monthBlocks_store } from "./components/stores/stores";
+  import {
+    monthBlocks_store,
+    daysViewLength_store,
+  } from "./components/stores/stores";
 
   export let rows;
 
@@ -75,7 +78,8 @@
   }));
 
   let currentDate: Date = new Date();
-  let daysViewLength = 0;
+  //   let daysViewLength = 0;
+  let daysViewLength = get(daysViewLength_store);
 
   let endDate: Date = currentDate;
   let monthBlocks: MonthBlock[] = get(monthBlocks_store);
@@ -87,19 +91,24 @@
 
   $: endDate;
 
-  $: monthBlocks;
+  //   $: monthBlocks;
 
-  $: daysViewLength;
+  //   $: daysViewLength;
 
   $: {
-    let pointer = currentDate;
+    monthBlocks = [];
+    daysViewLength = 0;
+
+    let pointer = new Date();
 
     let diffMonth = endDate.getMonth() - pointer.getMonth() + 1; // to make the end inclusive
     let diffYear = (endDate.getFullYear() - pointer.getFullYear()) * 12;
     let diff = diffMonth + diffYear;
 
-    console.log(`${endDate.getMonth()} - ${pointer.getMonth()}`);
-    console.log(diffMonth);
+    console.log(
+      `${endDate.getMonth()} ${endDate.getFullYear()} - ${pointer.getMonth()} ${pointer.getFullYear()}`
+    );
+    // console.log(diffMonth);
     console.log(diff);
 
     let i = 0;
@@ -119,8 +128,8 @@
       let block: MonthBlock = { monthYear: monthYear, daysRange: days };
       monthBlocks.push(block);
 
-      console.log("MONTHBLOCK");
-      console.log(monthBlocks);
+      //   console.log("MONTHBLOCK");
+      //   console.log(monthBlocks);
 
       // increase month by 1
       let month = pointer.getMonth();
@@ -134,25 +143,29 @@
       pointer.setDate(1);
 
       monthBlocks_store.set(monthBlocks);
+      daysViewLength_store.set(daysViewLength);
 
       ++i;
     }
     // console.log("MATCH");
   }
 
-  $: rows.forEach((row) => {
-    let rowDue: Date = row.row["due"];
-    if (!rowDue) {
-      return;
-    }
+  $: {
+    endDate = new Date();
+    rows.forEach((row) => {
+      let rowDue: Date = row.row["due"];
+      if (!rowDue) {
+        return;
+      }
 
-    if (rowDue.getTime() > endDate.getTime()) {
-      console.log("REPLACING");
-      endDate = rowDue;
-    }
-    console.log(endDate);
-    // let due = row.row["due"]
-  });
+      if (rowDue.getTime() > endDate.getTime()) {
+        console.log("REPLACING");
+        endDate = rowDue;
+      }
+      console.log(endDate);
+      // let due = row.row["due"]
+    });
+  }
 </script>
 
 <ViewLayout>
@@ -160,7 +173,8 @@
     <!-- <div class="vBoxLayout"> -->
     <Header />
     {#each rows as val, i}
-      <EventRow {daysViewLength}>
+      <!-- <EventRow {daysViewLength}> -->
+      <EventRow>
         <TextLabel
           slot="task"
           value={val.rowId}
