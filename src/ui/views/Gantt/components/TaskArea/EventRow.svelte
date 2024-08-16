@@ -22,6 +22,7 @@
 <style>
   /* cant's style slots */
   .task {
+    width: 20vw;
     min-width: 20vw;
     text-overflow: clip;
     overflow: hidden;
