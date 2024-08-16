@@ -117,6 +117,7 @@
         break;
       }
       let currentMonth: number = pointer.getMonth();
+      let currentYear: number = pointer.getFullYear();
 
       let monthYear: string = `${monthFromIndex(currentMonth)} ${currentYear}`;
       let days: number[] = _range(
