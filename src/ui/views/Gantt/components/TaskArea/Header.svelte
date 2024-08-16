@@ -3,8 +3,6 @@
   import VBoxLayout from "../layout/VBoxLayout.svelte";
   import HeaderDate from "./HeaderDate.svelte";
 
-  export let monthBlocks;
-
   const dispatch = createEventDispatcher();
 </script>
 

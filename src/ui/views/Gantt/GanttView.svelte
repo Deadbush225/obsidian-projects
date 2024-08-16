@@ -55,7 +55,7 @@
   import { get } from "svelte/store";
 
   import { daysPerMonth, monthFromIndex } from "./constants";
-  import { _range } from "./components/TaskArea/helper";
+  import { _range, daysFromNow } from "./components/TaskArea/helper";
   import { monthBlocks_store } from "./components/stores/stores";
 
   export let rows;
@@ -94,47 +94,48 @@
   $: {
     let pointer = currentDate;
 
-    let diffMonth = endDate.getMonth() - pointer.getMonth();
+    let diffMonth = endDate.getMonth() - pointer.getMonth() + 1; // to make the end inclusive
     let diffYear = (endDate.getFullYear() - pointer.getFullYear()) * 12;
     let diff = diffMonth + diffYear;
 
+    console.log(`${endDate.getMonth()} - ${pointer.getMonth()}`);
+    console.log(diffMonth);
     console.log(diff);
 
     let i = 0;
     while (i < diff) {
-      if (pointer.getTime() != endDate.getTime()) {
-        let currentMonth: number = pointer.getMonth();
-
-        let monthYear: string = `${monthFromIndex(
-          currentMonth
-        )} ${currentYear}`;
-        let days: number[] = _range(
-          pointer.getDate(),
-          daysPerMonth(currentMonth, false)
-        );
-
-        daysViewLength += days.length;
-        let block: MonthBlock = { monthYear: monthYear, daysRange: days };
-        monthBlocks.push(block);
-
-        console.log("MONTHBLOCK");
-        console.log(monthBlocks);
-
-        // increase month by 1
-        let month = pointer.getMonth();
-        if (month == 12) {
-          pointer.setFullYear(pointer.getFullYear() + 1);
-          pointer.setMonth(0);
-        } else {
-          pointer.setMonth(month + 1);
-        }
-        console.log("RESETING DATE");
-        pointer.setDate(1);
+      if (pointer.getTime() >= endDate.getTime()) {
+        break;
       }
+      let currentMonth: number = pointer.getMonth();
+
+      let monthYear: string = `${monthFromIndex(currentMonth)} ${currentYear}`;
+      let days: number[] = _range(
+        pointer.getDate(),
+        daysPerMonth(currentMonth, false)
+      );
+
+      daysViewLength += days.length;
+      let block: MonthBlock = { monthYear: monthYear, daysRange: days };
+      monthBlocks.push(block);
+
+      console.log("MONTHBLOCK");
+      console.log(monthBlocks);
+
+      // increase month by 1
+      let month = pointer.getMonth();
+      if (month == 12) {
+        pointer.setFullYear(pointer.getFullYear() + 1);
+        pointer.setMonth(0);
+      } else {
+        pointer.setMonth(month + 1);
+      }
+      //   console.log("RESETING DATE");
+      pointer.setDate(1);
 
       monthBlocks_store.set(monthBlocks);
 
-      i++;
+      ++i;
     }
     // console.log("MATCH");
   }
@@ -166,11 +167,17 @@
           sourcePath={val.row["name"]}
           richText={true}
         />
+        <!-- {#if val.row["due"] !== undefined} -->
         <div
           slot="event"
           class="event"
-          style="left:{Math.floor(Math.random() * 30) * 2}em; width:6em"
+          style="left:{(val.row['start'] !== undefined
+            ? daysFromNow(val.row['start'])
+            : 0) * 2}em; width:{(val.row['due'] !== undefined
+            ? daysFromNow(val.row['due'])
+            : 0) * 2}em"
         />
+        <!-- {/if} -->
       </EventRow>
     {/each}
     <!-- <HBoxLayout> -->
