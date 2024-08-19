@@ -43,10 +43,16 @@
   export let config: TableConfig | undefined;
   export let onConfigChange: (cfg: TableConfig) => void;
 
+  console.log("CONFIG");
+  console.log(config);
+
   let buttonEl: HTMLElement;
 
   function saveConfig(cfg: TableConfig) {
     config = cfg;
+    console.log("SAVING CONFIG");
+    console.log(cfg);
+
     onConfigChange(cfg);
   }
 

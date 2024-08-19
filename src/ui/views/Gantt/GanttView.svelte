@@ -41,7 +41,7 @@
   export let getRecordColor: (record: DataRecord) => string | null;
 
   export let config: GanttConfig | undefined;
-  export let onConfigChange: (cfg: TableConfig) => void;
+  export let onConfigChange: (cfg: GanttConfig) => void;
 
   import Header from "./components/TaskArea/Header.svelte";
   //   import TaskArea from "./components/TaskArea/TaskArea.svelte";
@@ -63,19 +63,27 @@
 
   export let rows;
 
-  export function getFieldTypeByName(name: string): DataFieldType | undefined {
-    const field = fields.find((field) => name === field.name);
-    return field?.type;
+  function saveConfig(cfg: GanttConfig) {
+    config = cfg;
+    onConfigChange(cfg);
   }
 
   //   type GridRowId = string;
 
   $: ({ fields, records } = frame);
 
+  $: fieldConfig = config?.fieldConfig ?? {};
+
   $: rows = records.map<CustomGridRowProps>(({ id, values }) => ({
     rowId: id,
     row: values,
   }));
+
+  $: width = fieldConfig["Tasks Column"]?.width ?? 200;
+  $: {
+    console.log(width);
+    console.log(fields);
+  }
 
   let currentDate: Date = new Date();
   //   let daysViewLength = 0;
@@ -86,6 +94,18 @@
   //   let currentDay: number = currentDate.getDate();
   let currentYear: number = currentDate.getFullYear();
 
+  function handleWidthChange(field: string = "Tasks Column", width: number) {
+    saveConfig({
+      ...config,
+      fieldConfig: {
+        ...fieldConfig,
+        [field]: {
+          ...fieldConfig[field],
+          width,
+        },
+      },
+    });
+  }
   //   let endDate: Date = new Date();
   //   endDate.setDate(currentDate.getDate() + 70);
 
@@ -105,11 +125,11 @@
     let diffYear = (endDate.getFullYear() - pointer.getFullYear()) * 12;
     let diff = diffMonth + diffYear;
 
-    console.log(
-      `${endDate.getMonth()} ${endDate.getFullYear()} - ${pointer.getMonth()} ${pointer.getFullYear()}`
-    );
+    // console.log(
+    //   `${endDate.getMonth()} ${endDate.getFullYear()} - ${pointer.getMonth()} ${pointer.getFullYear()}`
+    // );
     // console.log(diffMonth);
-    console.log(diff);
+    // console.log(diff);
 
     let i = 0;
     while (i < diff) {
@@ -160,10 +180,10 @@
       }
 
       if (rowDue.getTime() > endDate.getTime()) {
-        console.log("REPLACING");
+        // console.log("REPLACING");
         endDate = rowDue;
       }
-      console.log(endDate);
+      //   console.log(endDate);
       // let due = row.row["due"]
     });
   }
@@ -172,16 +192,18 @@
 <ViewLayout>
   <ViewContent>
     <!-- <div class="vBoxLayout"> -->
-    <Header />
+    <Header {width} onColumnResize={handleWidthChange} />
     {#each rows as val, i}
       <!-- <EventRow {daysViewLength}> -->
       <EventRow>
-        <TextLabel
-          slot="task"
-          value={val.rowId}
-          sourcePath={val.row["name"]}
-          richText={true}
-        />
+        <div style={`min-width: ${width}px`} slot="task" class="task">
+          <TextLabel
+            value={val.rowId}
+            sourcePath={val.row["name"]}
+            richText={true}
+          />
+        </div>
+
         <!-- {#if val.row["due"] !== undefined} -->
         <div
           slot="event"
@@ -195,21 +217,30 @@
         <!-- {/if} -->
       </EventRow>
     {/each}
-    <!-- <HBoxLayout> -->
-    <!-- {console.log("========")} -->
-    <!-- {console.log(val)} -->
-    <!-- <a class="row" href={val.row.name}>{val.row.name}</a> -->
-    <!-- <div class="row">{val.row["name"]}</div> -->
-    <!-- <InternalLink /> -->
-    <!-- </HBoxLayout> -->
-    <!-- <TaskArea /> -->
-    <!-- <EventArea /> -->
-    <!-- <EventArea --gt-row-height="1.3em"></EventArea> -->
-    <!-- </div> -->
   </ViewContent>
 </ViewLayout>
 
 <style>
+  /* cant's style slots */
+  .task {
+    /* width: 20vw; */
+    /* min-width: 20vw; */
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 6px;
+
+    position: sticky;
+    left: 0;
+
+    background-color: var(--background-primary);
+    border-right: 1px solid var(--background-modifier-border);
+    border-left-color: var(--background-modifier-border);
+    border-bottom: 1px solid var(--background-modifier-border);
+    z-index: 10;
+    /* background-color: red; */
+  }
+
   /* div {
     display: flex;
   } */

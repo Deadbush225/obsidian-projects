@@ -7,6 +7,7 @@
   export let value: string;
   export let richText: boolean = false;
   export let sourcePath: string;
+  export let style: string = "";
 
   //   const sourcePath = getContext<string>("sourcePath") ?? "";
 
@@ -59,6 +60,7 @@
     }}
     on:focus
     on:keypress
+    {style}
   />
 {:else}
   <div>
