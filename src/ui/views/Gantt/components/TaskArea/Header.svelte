@@ -16,7 +16,7 @@
 <VBoxLayout className="gantt-header">
   <VBoxLayout id="tasks-header">
     <VBoxLayout style={`width: ${width}px`}>
-      <div>Tasks</div>
+      <div class="gt-center-text">Tasks</div>
       <div
         on:click={() => {
           dispatch("addTask");
@@ -68,6 +68,11 @@
 <!-- </div> -->
 
 <style>
+  .gt-center-text {
+    width: 100%;
+    text-align: center;
+  }
+
   :global(.gantt-header) {
     /* height: 30px; */
   }
