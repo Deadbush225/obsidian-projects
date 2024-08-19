@@ -218,7 +218,7 @@
           style="left:{(val.row['start'] !== undefined
             ? daysFromNow(val.row['start'])
             : 0) * 2}em; width:{(val.row['due'] !== undefined
-            ? daysFromNow(val.row['due'])
+            ? daysFromNow(val.row['due']) - daysFromNow(val.row['start'])
             : 0) * 2}em"
         />
         <!-- {/if} -->

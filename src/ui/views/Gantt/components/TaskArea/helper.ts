@@ -18,6 +18,10 @@ export function daysFromNow(date: Date): number {
   }
 
   let now: Date = new Date();
+  if (date.getTime() < now.getTime()) {
+    return 0;
+  }
+
   let diffInMIliSeconds: number = date.getTime() - now.getTime();
   let diffInDays: number = Math.ceil(diffInMIliSeconds / (1000 * 3600 * 24));
   return diffInDays;
