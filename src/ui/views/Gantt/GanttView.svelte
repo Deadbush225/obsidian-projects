@@ -196,7 +196,11 @@
     {#each rows as val, i}
       <!-- <EventRow {daysViewLength}> -->
       <EventRow>
-        <div style={`min-width: ${width}px`} slot="task" class="task">
+        <div
+          style={`width: ${width}px; flex: 0 0 auto`}
+          slot="task"
+          class="task"
+        >
           <TextLabel
             value={val.rowId}
             sourcePath={val.row["name"]}
