@@ -15,8 +15,11 @@
 <!-- <div class="header vBoxLayout"> -->
 <VBoxLayout className="gantt-header">
   <VBoxLayout id="tasks-header">
-    <VBoxLayout style={`width: ${width}px`}>
-      <div class="gt-center-text">Tasks</div>
+    <VBoxLayout
+      style={`width: ${width}px`}
+      className="flex-center-horizontally"
+    >
+      <div class="flex-center-vertically">Tasks</div>
       <div
         on:click={() => {
           dispatch("addTask");
@@ -68,9 +71,15 @@
 <!-- </div> -->
 
 <style>
-  .gt-center-text {
-    width: 100%;
-    text-align: center;
+  :global(.flex-center-horizontally) {
+    display: flex;
+    justify-content: center;
+  }
+
+  :global(.flex-center-vertically) {
+    flex-wrap: wrap;
+    display: flex;
+    align-content: center;
   }
 
   :global(.gantt-header) {
