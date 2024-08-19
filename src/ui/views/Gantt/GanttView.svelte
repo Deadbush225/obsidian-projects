@@ -197,7 +197,7 @@
       <!-- <EventRow {daysViewLength}> -->
       <EventRow>
         <div
-          style={`width: ${width}px; flex: 0 0 auto`}
+          style={`width: ${width + 1}px; flex: 0 0 auto`}
           slot="task"
           class="task"
         >
