@@ -7,8 +7,8 @@
   export let value: string;
   export let richText: boolean = false;
 
-  console.log("TextLabel");
-  console.log(value);
+  //   console.log("TextLabel");
+  //   console.log(value);
 
   const sourcePath = getContext<string>("sourcePath") ?? "";
 

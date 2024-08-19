@@ -8,7 +8,7 @@
   let initial: number | null;
 
   function startResize(event: MouseEvent) {
-    console.log("START DRAG");
+    // console.log("START DRAG");
     // Unless we stop propagation, resizing will also drag the column.
     event.stopPropagation();
 
@@ -17,13 +17,13 @@
   }
 
   function stopResize(event: MouseEvent) {
-    console.log("STOPPING RESIZE");
+    // console.log("STOPPING RESIZE");
     if (start && initial) {
       const delta = event.pageX - start;
       const newWidth = initial + delta;
 
       if (newWidth >= min) {
-        console.log(newWidth);
+        // console.log(newWidth);
         onFinalize(newWidth);
         // onFinalize(width);
       }
@@ -34,7 +34,7 @@
   }
 
   function resize(event: MouseEvent) {
-    console.log("RESIZE");
+    // console.log("RESIZE");
 
     if (start && initial) {
       const delta = event.pageX - start;

@@ -24,7 +24,7 @@
     return {
       update(newValue: string) {
         node.empty();
-        MarkdownRenderer.render($app, newValue, node, sourcePath, $view);
+        MarkdownRenderer.render($app, sourcePath, node, value, $view);
       },
     };
   }

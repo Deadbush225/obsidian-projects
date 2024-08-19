@@ -80,10 +80,10 @@
   }));
 
   $: width = fieldConfig["Tasks Column"]?.width ?? 200;
-  $: {
-    console.log(width);
-    console.log(fields);
-  }
+  //   $: {
+  //     // console.log(width);
+  //     // console.log(fields);
+  //   }
 
   let currentDate: Date = new Date();
   //   let daysViewLength = 0;
@@ -92,7 +92,7 @@
   let endDate: Date = currentDate;
   let monthBlocks: MonthBlock[] = get(monthBlocks_store);
   //   let currentDay: number = currentDate.getDate();
-  let currentYear: number = currentDate.getFullYear();
+  //   let currentYear: number = currentDate.getFullYear();
 
   function handleWidthChange(field: string = "Tasks Column", width: number) {
     saveConfig({
@@ -172,6 +172,7 @@
   }
 
   $: {
+    console.log("CHECKING DATERANGE CHANGE");
     endDate = new Date();
     rows.forEach((row) => {
       let rowDue: Date = row.row["due"];
@@ -194,6 +195,8 @@
     <!-- <div class="vBoxLayout"> -->
     <Header {width} onColumnResize={handleWidthChange} />
     {#each rows as val, i}
+      <!-- {console.log(val.rowId)}
+      {console.log(val.row["name"])} -->
       <!-- <EventRow {daysViewLength}> -->
       <EventRow>
         <div

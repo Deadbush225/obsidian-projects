@@ -9,14 +9,14 @@
 
   //   export let monthBlocks; // use store instead of reactive values
   //   let monthBlocks: MonthBlock[] = get(monthBlocks_store); // use store instead of reactive values
-  console.log("CONSTRUCTING HEADER");
-  console.log($monthBlocks_store);
+  //   console.log("CONSTRUCTING HEADER");
+  //   console.log($monthBlocks_store);
 
   //   $: monthBlocks;
-  $: {
-    console.log("TEST");
-    console.log($monthBlocks_store);
-  }
+  //   $: {
+  //     console.log("TEST");
+  //     console.log($monthBlocks_store);
+  //   }
 </script>
 
 <VBoxLayout>
