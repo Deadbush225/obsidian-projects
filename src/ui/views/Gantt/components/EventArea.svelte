@@ -30,12 +30,12 @@
 
 <style>
   .event {
-    background-color: red;
+    background-color: var(--color-accent-2);
     /* display: table-cell; */
     position: absolute;
     height: var(--gt-row-height);
     /* height: 1.3em;  */
-    margin-top: 0.4em;
+    /* margin-top: 0.4em; */
     text-align: center;
   }
 

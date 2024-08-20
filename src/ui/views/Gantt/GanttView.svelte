@@ -265,7 +265,7 @@
     display: flex;
   } */
   .event {
-    background-color: red;
+    background-color: var(--color-purple);
     /* display: table-cell; */
     position: absolute;
     height: var(--gt-row-height);
