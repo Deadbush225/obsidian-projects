@@ -41,6 +41,7 @@
       const newWidth = initial + delta;
 
       if (newWidth >= min) {
+        // console.log(newWidth);
         onChange(newWidth);
       }
     }

@@ -3,6 +3,7 @@
   import VBoxLayout from "../layout/VBoxLayout.svelte";
   import HeaderDate from "./HeaderDate.svelte";
   import Resizer from "../TaskArea/Resizer.svelte";
+  import GridCell from "./GridCell.svelte";
 
   export let width: number;
   export let onColumnResize: (field: string, width: number) => void;
@@ -15,6 +16,7 @@
 <!-- <div class="header vBoxLayout"> -->
 <VBoxLayout className="gantt-header">
   <VBoxLayout id="tasks-header">
+    <GridCell />
     <VBoxLayout
       style={`width: ${width}px`}
       className="flex-center-horizontally"

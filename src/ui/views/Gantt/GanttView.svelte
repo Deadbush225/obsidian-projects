@@ -51,6 +51,7 @@
   //   import InternalLink from "src/ui/components/InternalLink.svelte";
   import TextLabel from "./components/TaskArea/TextLabel.svelte";
   import EventRow from "./components/TaskArea/EventRow.svelte";
+  import GridCell from "./components/TaskArea/GridCell.svelte";
 
   import { get } from "svelte/store";
 
@@ -81,6 +82,7 @@
 
   $: width = fieldConfig["Tasks Column"]?.width ?? 200;
   //   $: {
+  //     // console.log("WIDTH CHANGED");
   //     // console.log(width);
   //     // console.log(fields);
   //   }
@@ -172,7 +174,7 @@
   }
 
   $: {
-    console.log("CHECKING DATERANGE CHANGE");
+    // console.log("CHECKING DATERANGE CHANGE");
     endDate = new Date();
     rows.forEach((row) => {
       let rowDue: Date = row.row["due"];
@@ -194,21 +196,24 @@
   <ViewContent>
     <!-- <div class="vBoxLayout"> -->
     <Header {width} onColumnResize={handleWidthChange} />
-    {#each rows as val, i}
+    <!-- {console.log(width)} -->
+    <!-- {width} -->
+    {#each rows as val, i (i)}
       <!-- {console.log(val.rowId)}
-      {console.log(val.row["name"])} -->
+    {console.log(val.row["name"])} -->
       <!-- <EventRow {daysViewLength}> -->
       <EventRow>
-        <div
-          style={`width: ${width + 1}px; flex: 0 0 auto`}
-          slot="task"
-          class="task"
-        >
+        <!-- {width} -->
+        <GridCell slot="num">
+          {i + 1}
+        </GridCell>
+        <div slot="task" class="task" style="width:{width + 1}px">
           <TextLabel
             value={val.rowId}
             sourcePath={val.row["name"]}
             richText={true}
           />
+          <!-- {width} -->
         </div>
 
         <!-- {#if val.row["due"] !== undefined} -->
@@ -221,6 +226,13 @@
             ? daysFromNow(val.row['due']) - daysFromNow(val.row['start'])
             : 0) * 2}em"
         />
+        <!-- <div
+          slot="event"
+          class="event"
+          style="left:{(val.row['start'] !== undefined
+            ? daysFromNow(val.row['start'])
+            : 0) * 2}em; width:{width}px"
+        /> -->
         <!-- {/if} -->
       </EventRow>
     {/each}
@@ -237,8 +249,8 @@
     white-space: nowrap;
     padding: 6px;
 
-    position: sticky;
-    left: 0;
+    /* position: sticky;
+    left: 0; */
 
     background-color: var(--background-primary);
     border-right: 1px solid var(--background-modifier-border);
@@ -246,6 +258,7 @@
     border-bottom: 1px solid var(--background-modifier-border);
     z-index: 10;
     /* background-color: red; */
+    flex: 0 0 auto;
   }
 
   /* div {
@@ -262,7 +275,7 @@
   }
 
   /* styled as a column header*/
-  span {
+  /* span {
     position: sticky;
     top: 0;
     z-index: 6;
@@ -294,7 +307,7 @@
 
   span:hover {
     color: var(--text-normal);
-  }
+  } */
 
   :global(:root) {
     --gt-row-height: 1.3em;
