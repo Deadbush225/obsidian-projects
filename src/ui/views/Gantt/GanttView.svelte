@@ -4,12 +4,12 @@
     type DataFrame,
     type DataRecord,
   } from "src/lib/dataframe/dataframe";
-  //   import { createDataRecord } from "src/lib/dataApi";
+  import { createDataRecord } from "src/lib/dataApi";
   //   import { i18n } from "src/lib/stores/i18n";
-  //   import { app } from "src/lib/stores/obsidian";
+  import { app } from "src/lib/stores/obsidian";
   import type { ViewApi } from "src/lib/viewApi";
-  //   import { CreateNoteModal } from "src/ui/modals/createNoteModal";
-  //   import { EditNoteModal } from "src/ui/modals/editNoteModal";
+  import { CreateNoteModal } from "src/ui/modals/createNoteModal";
+  // import { EditNoteModal } from "src/ui/modals/editNoteModal";
 
   //   import type {
   //     GridColDef,
@@ -52,6 +52,8 @@
   import TextLabel from "./components/TaskArea/TextLabel.svelte";
   import EventRow from "./components/TaskArea/EventRow.svelte";
   import GridCell from "./components/TaskArea/GridCell.svelte";
+  import GridRow from "./components/TaskArea/GridRow.svelte";
+  import { Button, Icon } from "obsidian-svelte";
 
   import { get } from "svelte/store";
 
@@ -236,6 +238,29 @@
         <!-- {/if} -->
       </EventRow>
     {/each}
+    <GridRow>
+      <div style="padding: 4px;">
+        <Button
+          variant="plain"
+          on:click={() => {
+            new CreateNoteModal(
+              $app,
+              project,
+              (name, templatePath, project) => {
+                api.addRecord(
+                  createDataRecord(name, project),
+                  fields,
+                  templatePath
+                );
+              }
+            ).open();
+          }}
+        >
+          <Icon name="plus" />
+          <div>Add note</div>
+        </Button>
+      </div>
+    </GridRow>
   </ViewContent>
 </ViewLayout>
 

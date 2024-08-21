@@ -22,7 +22,7 @@
       className="flex-center-horizontally"
     >
       <div class="flex-center-vertically">Tasks</div>
-      <div
+      <!-- <div
         on:click={() => {
           dispatch("addTask");
         }}
@@ -52,7 +52,7 @@
             />
           </g></svg
         >
-      </div>
+      </div> -->
     </VBoxLayout>
     <Resizer
       {width}
