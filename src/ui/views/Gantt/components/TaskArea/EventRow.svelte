@@ -21,7 +21,10 @@
         <div class="block" />
       {/each}
     </VBoxLayout>
+    <!-- <div> -->
     <slot name="event" />
+    <!-- <slot name="re" /> -->
+    <!-- </div> -->
   </div>
 </VBoxLayout>
 

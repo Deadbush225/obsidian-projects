@@ -53,12 +53,14 @@
   import EventRow from "./components/TaskArea/EventRow.svelte";
   import GridCell from "./components/TaskArea/GridCell.svelte";
   import GridRow from "./components/TaskArea/GridRow.svelte";
+  import Event from "./components/TaskArea/Event.svelte";
+  import { produce } from "immer";
   import { Button, Icon } from "obsidian-svelte";
 
   import { get } from "svelte/store";
 
   import { daysPerMonth, monthFromIndex } from "./constants";
-  import { _range, daysFromNow } from "./components/TaskArea/helper";
+  import { _range } from "./components/TaskArea/helper";
   import {
     monthBlocks_store,
     daysViewLength_store,
@@ -74,6 +76,8 @@
   //   type GridRowId = string;
 
   $: ({ fields, records } = frame);
+
+  $: console.log(records);
 
   $: fieldConfig = config?.fieldConfig ?? {};
 
@@ -179,10 +183,14 @@
     // console.log("CHECKING DATERANGE CHANGE");
     endDate = new Date();
     rows.forEach((row) => {
-      let rowDue: Date = row.row["due"];
-      if (!rowDue) {
+      //   console.log(row.row["due"]);
+      if (!row.row["due"]) {
         return;
       }
+      let rowDue: Date = new Date(row.row["due"]);
+      //   if (!rowDue) {
+      //     return;
+      //   }
 
       if (rowDue.getTime() > endDate.getTime()) {
         // console.log("REPLACING");
@@ -200,9 +208,9 @@
     <Header {width} onColumnResize={handleWidthChange} />
     <!-- {console.log(width)} -->
     <!-- {width} -->
-    {#each rows as val, i (i)}
-      <!-- {console.log(val.rowId)}
-    {console.log(val.row["name"])} -->
+    {#each rows as { rowId, row }, i (rowId)}
+      <!-- {console.log(val.rowId)} -->
+      <!-- {console.log(val.row["name"])} -->
       <!-- <EventRow {daysViewLength}> -->
       <EventRow>
         <!-- {width} -->
@@ -210,24 +218,30 @@
           {i + 1}
         </GridCell>
         <div slot="task" class="task" style="width:{width + 1}px">
-          <TextLabel
-            value={val.rowId}
-            sourcePath={val.row["name"]}
-            richText={true}
-          />
+          <TextLabel value={rowId} sourcePath={row["name"]} richText={true} />
           <!-- {width} -->
         </div>
 
         <!-- {#if val.row["due"] !== undefined} -->
-        <div
+        <Event
           slot="event"
-          class="event"
-          style="left:{(val.row['start'] !== undefined
-            ? daysFromNow(val.row['start'])
-            : 0) * 2}em; width:{(val.row['due'] !== undefined
-            ? daysFromNow(val.row['due']) - daysFromNow(val.row['start'])
-            : 0) * 2}em"
+          {row}
+          onChange={(change, field) => {
+            api.updateRecord(
+              {
+                id: rowId,
+                values: produce(row, (draft) => {
+                  draft[field] = new Date(
+                    draft[field].setDate(draft[field].getDate() + change)
+                  );
+                  return draft;
+                }),
+              },
+              fields
+            );
+          }}
         />
+
         <!-- <div
           slot="event"
           class="event"
@@ -289,15 +303,6 @@
   /* div {
     display: flex;
   } */
-  .event {
-    background-color: var(--color-purple);
-    /* display: table-cell; */
-    position: absolute;
-    height: var(--gt-row-height);
-    /* height: 1.3em;  */
-    margin-top: 0.4em;
-    text-align: center;
-  }
 
   /* styled as a column header*/
   /* span {

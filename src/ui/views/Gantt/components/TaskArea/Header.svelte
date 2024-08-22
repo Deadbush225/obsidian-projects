@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  //   import { createEventDispatcher } from "svelte";
   import VBoxLayout from "../layout/VBoxLayout.svelte";
   import HeaderDate from "./HeaderDate.svelte";
   import Resizer from "../TaskArea/Resizer.svelte";
@@ -8,7 +8,7 @@
   export let width: number;
   export let onColumnResize: (field: string, width: number) => void;
 
-  const dispatch = createEventDispatcher();
+  //   const dispatch = createEventDispatcher();
 
   //   function onResize();
 </script>
