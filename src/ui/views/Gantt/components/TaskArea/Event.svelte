@@ -5,10 +5,10 @@
   export let onChange: (change: number, field: str) => void;
   export let row: any;
 
-  console.log(row);
+  //   console.log(row);
 
-  let distanceStartDate;
-  let distanceDueDate;
+  let distanceStartDate: number;
+  let distanceDueDate: number;
 
   $: row;
 

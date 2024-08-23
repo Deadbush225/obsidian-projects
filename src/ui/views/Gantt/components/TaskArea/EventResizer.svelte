@@ -1,5 +1,4 @@
 <script lang="ts">
-  // export let width: number;
   let width = 1;
   let min = 0;
   export let onChange: (change: number, field: string) => void;

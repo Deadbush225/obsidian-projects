@@ -16,7 +16,7 @@
   $: delta = -3;
 
   function startResize(event: MouseEvent) {
-    console.log("CELL DRAGGER");
+    // console.log("CELL DRAGGER");
     // Unless we stop propagation, resizing will also drag the column.
     event.stopPropagation();
 
@@ -46,25 +46,25 @@
     //   //   initial = null;
     // }
     if (start && initial) {
-      console.log("posting change");
+      //   console.log("posting change");
 
       let startDate = new Date();
       startDate.setDate(
         startDate.getDate() + startIndex + (isNegative ? change : 0)
       );
-      console.log(
-        `${startDate.getDate()} + ${startIndex} + ${isNegative ? change : 0}`
-      );
+      //   console.log(
+      //     `${startDate.getDate()} + ${startIndex} + ${isNegative ? change : 0}`
+      //   );
 
       let dueDate = new Date();
       dueDate.setDate(
         dueDate.getDate() + startIndex + (isNegative ? 0 : change)
       );
-      console.log(
-        `${dueDate.getDate()} + ${startIndex} + ${
-          isNegative ? -1 * change : change
-        }`
-      );
+      //   console.log(
+      //     `${dueDate.getDate()} + ${startIndex} + ${
+      //       isNegative ? -1 * change : change
+      //     }`
+      //   );
 
       onChange(startDate, dueDate);
     }
@@ -101,7 +101,7 @@
       //   } else if (delta >= -32) {
       //     change = Math.floor(delta / 32) - offset;
       //   }
-      console.log(change);
+      //   console.log(change);
       //   current = event.pageX;
       //   console.log(current);
       //   console.log(start);

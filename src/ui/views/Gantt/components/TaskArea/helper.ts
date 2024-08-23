@@ -11,11 +11,16 @@ export function _range(min: number, max: number): number[] {
   return r;
 }
 
-export function daysFromNow(date: Date): number {
+export function daysFromNow(date: Date | string | any): number {
   //   console.log(typeof date);
-  if (date === undefined) {
+  if (isNaN(Date.parse(date))) {
     return 0;
   }
+
+  date = new Date(date);
+  //   if (!(date instanceof Date)) {
+  //     return 0;
+  //   }
 
   let now: Date = new Date();
   if (date.getTime() < now.getTime()) {

@@ -44,11 +44,6 @@
   export let onConfigChange: (cfg: GanttConfig) => void;
 
   import Header from "./components/TaskArea/Header.svelte";
-  //   import TaskArea from "./components/TaskArea/TaskArea.svelte";
-  //   import EventArea from "./components/EventArea.svelte";
-  //   import HBoxLayout from "./components/layout/HBoxLayout.svelte";
-  //   import VBoxLayout from "./components/layout/VBoxLayout.svelte";
-  //   import InternalLink from "src/ui/components/InternalLink.svelte";
   import TextLabel from "./components/TaskArea/TextLabel.svelte";
   import EventRow from "./components/TaskArea/EventRow.svelte";
   import GridCell from "./components/TaskArea/GridCell.svelte";
@@ -65,7 +60,6 @@
     monthBlocks_store,
     daysViewLength_store,
   } from "./components/stores/stores";
-  import { values } from "fp-ts/lib/Map";
 
   export let rows;
 
@@ -78,7 +72,7 @@
 
   $: ({ fields, records } = frame);
 
-  $: console.log(records);
+  //   $: console.log(records);
 
   $: fieldConfig = config?.fieldConfig ?? {};
 
@@ -88,20 +82,14 @@
   }));
 
   $: width = fieldConfig["Tasks Column"]?.width ?? 200;
-  //   $: {
-  //     // console.log("WIDTH CHANGED");
-  //     // console.log(width);
-  //     // console.log(fields);
-  //   }
 
   let currentDate: Date = new Date();
-  //   let daysViewLength = 0;
   let daysViewLength = get(daysViewLength_store);
 
   let endDate: Date = currentDate;
   let monthBlocks: MonthBlock[] = get(monthBlocks_store);
-  //   let currentDay: number = currentDate.getDate();
-  //   let currentYear: number = currentDate.getFullYear();
+
+  $: console.log(`${daysViewLength}, ${endDate}`);
 
   function handleWidthChange(field: string = "Tasks Column", width: number) {
     saveConfig({
@@ -115,8 +103,6 @@
       },
     });
   }
-  //   let endDate: Date = new Date();
-  //   endDate.setDate(currentDate.getDate() + 70);
 
   $: endDate;
 
@@ -141,8 +127,19 @@
     // console.log(diff);
 
     let i = 0;
+
+    console.log(diff);
+    if (diff == 1) {
+      console.log("NO DUE PROVIDED");
+      diff = 2;
+      endDate = new Date();
+      endDate.setDate(endDate.getDate() + 14);
+    }
+
     while (i < diff) {
+      console.log(`${pointer.toDateString()} : ${endDate.toDateString()}`);
       if (pointer.getTime() >= endDate.getTime()) {
+        console.log("BREAKING");
         break;
       }
       let currentMonth: number = pointer.getMonth();
@@ -158,8 +155,8 @@
       let block: MonthBlock = { monthYear: monthYear, daysRange: days };
       monthBlocks.push(block);
 
-      //   console.log("MONTHBLOCK");
-      //   console.log(monthBlocks);
+      console.log("MONTHBLOCK");
+      console.log(monthBlocks);
 
       // increase month by 1
       let month = pointer.getMonth();
@@ -205,14 +202,8 @@
 
 <ViewLayout>
   <ViewContent>
-    <!-- <div class="vBoxLayout"> -->
     <Header {width} onColumnResize={handleWidthChange} />
-    <!-- {console.log(width)} -->
-    <!-- {width} -->
     {#each rows as { rowId, row }, i (rowId)}
-      <!-- {console.log(val.rowId)} -->
-      <!-- {console.log(val.row["name"])} -->
-      <!-- <EventRow {daysViewLength}> -->
       <EventRow
         onNew={(start, due) => {
           api.updateRecord(
@@ -230,16 +221,12 @@
           );
         }}
       >
-        <!-- {width} -->
         <GridCell slot="num">
           {i + 1}
         </GridCell>
         <div slot="task" class="task" style="width:{width + 1}px">
           <TextLabel value={rowId} sourcePath={row["name"]} richText={true} />
-          <!-- {width} -->
         </div>
-
-        <!-- {#if val.row["due"] !== undefined} -->
         <Event
           slot="event"
           {row}
@@ -258,15 +245,6 @@
             );
           }}
         />
-
-        <!-- <div
-          slot="event"
-          class="event"
-          style="left:{(val.row['start'] !== undefined
-            ? daysFromNow(val.row['start'])
-            : 0) * 2}em; width:{width}px"
-        /> -->
-        <!-- {/if} -->
       </EventRow>
     {/each}
     <GridRow>
