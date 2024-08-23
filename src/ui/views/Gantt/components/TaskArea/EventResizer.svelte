@@ -52,7 +52,7 @@
     start = null;
     initial = null;
     change = 0;
-    delta = 3;
+    delta = 0;
   }
 
   function resize(event: MouseEvent) {
@@ -95,7 +95,7 @@
 <span
   class="handle"
   class:visible={start}
-  style="{position}: {-1 * delta}px"
+  style="{position}: {delta * (position == 'right' ? -1 : 1)}px"
   on:mousedown={startResize}
 />
 
