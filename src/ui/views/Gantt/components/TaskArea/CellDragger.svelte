@@ -2,9 +2,8 @@
   // export let width: number;
   let width = 1;
   let min = 0;
-  export let onChange: (change: number, field: string) => void;
-  export let position: string;
-  export let field: string;
+  export let onChange: (start: Date, due: Date) => void;
+  export let startIndex: number;
   //   export let onFinalize: (width: number) => void;
   //   export let min: number;
 
@@ -13,10 +12,10 @@
   let change: number;
   let delta: number;
 
-  $: delta;
+  $: delta = -3;
 
   function startResize(event: MouseEvent) {
-    console.log("START DRAG");
+    console.log("CELL DRAGGER");
     // Unless we stop propagation, resizing will also drag the column.
     event.stopPropagation();
 
@@ -47,12 +46,19 @@
     // }
     if (start && initial) {
       console.log("posting change");
-      onChange(change, field);
+
+      let startDate = new Date();
+      startDate.setDate(startDate.getDate() + startIndex);
+
+      let dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + startIndex + Math.abs(change));
+
+      onChange(startDate, dueDate);
     }
     start = null;
     initial = null;
     change = 0;
-    delta = 3;
+    delta = -3;
   }
 
   function resize(event: MouseEvent) {
@@ -67,8 +73,8 @@
       //   if (newWidth >= min) {
       //   Math.sign();
       let isNegative = Math.sign(delta) == -1;
-      let offset = 0;
-      //   let offset = isNegative ? -1 : 0;
+      //   let offset = 0;
+      let offset = isNegative ? -1 : 1;
       //   console.log(`DELTA: ${delta} OFFSET: ${offset} IS BACK: ${delta >= -32}`);
 
       if (delta >= 32 || isNegative) {
@@ -95,7 +101,7 @@
 <span
   class="handle"
   class:visible={start}
-  style="{position}: {-1 * delta}px"
+  style="left: {delta}px;"
   on:mousedown={startResize}
 />
 

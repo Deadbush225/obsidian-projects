@@ -65,6 +65,7 @@
     monthBlocks_store,
     daysViewLength_store,
   } from "./components/stores/stores";
+  import { values } from "fp-ts/lib/Map";
 
   export let rows;
 
@@ -212,7 +213,23 @@
       <!-- {console.log(val.rowId)} -->
       <!-- {console.log(val.row["name"])} -->
       <!-- <EventRow {daysViewLength}> -->
-      <EventRow>
+      <EventRow
+        onNew={(start, due) => {
+          api.updateRecord(
+            {
+              id: rowId,
+              values: produce(row, (draft) => {
+                draft["due"] = due;
+                if (start) {
+                  draft["start"] = start;
+                }
+                return draft;
+              }),
+            },
+            fields
+          );
+        }}
+      >
         <!-- {width} -->
         <GridCell slot="num">
           {i + 1}

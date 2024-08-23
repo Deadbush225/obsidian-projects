@@ -1,10 +1,13 @@
-<script>
+<script lang="ts">
   import HBoxLayout from "../layout/HBoxLayout.svelte";
   import VBoxLayout from "../layout/VBoxLayout.svelte";
+  import CellDragger from "./CellDragger.svelte";
 
   // try to give id for each "block" div equal to the date (use for loop starting to the currrent day), then style bloaks
   //   export let daysViewLength;
   import { daysViewLength_store } from "../stores/stores";
+
+  export let onNew: (start: Date, due: Date) => void;
 </script>
 
 <VBoxLayout>
@@ -18,7 +21,10 @@
   <div class="event">
     <VBoxLayout>
       {#each { length: $daysViewLength_store } as _, day}
-        <div class="block" />
+        <div class="block">
+          <!-- {day} -->
+          <CellDragger startIndex={day} onChange={onNew} />
+        </div>
       {/each}
     </VBoxLayout>
     <!-- <div> -->
@@ -39,6 +45,7 @@
     border-bottom: 1px solid var(--background-modifier-border);
     min-width: 2em;
     min-height: 2em;
+    position: relative;
     /* aspect-ratio: 1 / 1; */
   }
 
