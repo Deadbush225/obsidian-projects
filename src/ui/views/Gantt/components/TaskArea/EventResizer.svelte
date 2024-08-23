@@ -1,6 +1,6 @@
 <script lang="ts">
   let width = 1;
-  let min = 0;
+  //   let min = 0;
   export let onChange: (change: number, field: string) => void;
   export let position: string;
   export let field: string;

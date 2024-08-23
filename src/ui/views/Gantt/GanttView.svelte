@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
-    DataFieldType,
+    // DataFieldType,
     type DataFrame,
-    type DataRecord,
+    // type DataRecord,
   } from "src/lib/dataframe/dataframe";
   import { createDataRecord } from "src/lib/dataApi";
   //   import { i18n } from "src/lib/stores/i18n";
@@ -36,9 +36,9 @@
 
   export let project: ProjectDefinition;
   export let frame: DataFrame;
-  export let readonly: boolean;
+  //   export let readonly: boolean;
   export let api: ViewApi;
-  export let getRecordColor: (record: DataRecord) => string | null;
+  //   export let getRecordColor: (record: DataRecord) => string | null;
 
   export let config: GanttConfig | undefined;
   export let onConfigChange: (cfg: GanttConfig) => void;
@@ -59,7 +59,8 @@
   import {
     monthBlocks_store,
     daysViewLength_store,
-  } from "./components/stores/stores";
+  } from "./components/stores/store";
+  //   import { monthBlocks_store, daysViewLength_store } from "stores";
 
   export let rows;
 
@@ -84,7 +85,7 @@
   $: width = fieldConfig["Tasks Column"]?.width ?? 200;
 
   let currentDate: Date = new Date();
-  let daysViewLength = get(daysViewLength_store);
+  let daysViewLength: number = get(daysViewLength_store);
 
   let endDate: Date = currentDate;
   let monthBlocks: MonthBlock[] = get(monthBlocks_store);

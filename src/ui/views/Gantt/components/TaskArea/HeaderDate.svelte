@@ -2,7 +2,7 @@
   //   import { type MonthBlock } from "../../types";
   import HBoxLayout from "../layout/HBoxLayout.svelte";
   import VBoxLayout from "../layout/VBoxLayout.svelte";
-  import { monthBlocks_store } from "../stores/stores";
+  import { monthBlocks_store } from "../stores/store";
   //   import { daysPerMonth, monthFromIndex } from "../../constants";
   import { _range } from "./helper";
   //   import { get } from "svelte/store";

@@ -33,10 +33,10 @@ export class GanttView extends ProjectView<GanttConfig> {
         frame: { fields: [], records: [] },
         api: props.viewApi,
         project: props.project,
-        readonly: props.readonly,
+        // readonly: props.readonly,
         config: props.config,
         onConfigChange: props.saveConfig,
-        getRecordColor: props.getRecordColor,
+        // getRecordColor: props.getRecordColor,
       },
     });
   }

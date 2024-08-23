@@ -2,10 +2,7 @@
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
-    "types": [
-      "node",
-      "svelte"
-    ],
+    "types": ["node", "svelte"],
     "baseUrl": ".",
     "inlineSources": true,
     "module": "ESNext",
@@ -24,13 +21,8 @@
     "exactOptionalPropertyTypes": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "lib": [
-      "DOM",
-      "ES2022",
-    ],
+    "noImplicitAny": false,
+    "lib": ["DOM", "ES2022"]
   },
-  "include": [
-    "**/*.ts",
-    "src/__mocks__/obsidian.ts"
-  ]
+  "include": ["**/*.ts", "src/__mocks__/obsidian.ts"]
 }

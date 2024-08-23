@@ -2,7 +2,7 @@
   import EventResizer from "./EventResizer.svelte";
   import { daysFromNow } from "./helper";
 
-  export let onChange: (change: number, field: str) => void;
+  export let onChange: (change: number, field: string) => void;
   export let row: any;
 
   //   console.log(row);

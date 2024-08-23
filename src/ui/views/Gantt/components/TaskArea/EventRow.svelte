@@ -1,11 +1,12 @@
 <script lang="ts">
-  import HBoxLayout from "../layout/HBoxLayout.svelte";
+  //   import HBoxLayout from "../layout/HBoxLayout.svelte";
   import VBoxLayout from "../layout/VBoxLayout.svelte";
   import CellDragger from "./CellDragger.svelte";
 
   // try to give id for each "block" div equal to the date (use for loop starting to the currrent day), then style bloaks
   //   export let daysViewLength;
-  import { daysViewLength_store } from "../stores/stores";
+  import { daysViewLength_store } from "../stores/store";
+  //   import { daysViewLength_store } from "stores";
 
   export let onNew: (start: Date, due: Date) => void;
 </script>

@@ -1,7 +1,7 @@
 <script lang="ts">
   // export let width: number;
   let width = 1;
-  let min = 0;
+  //   let min = 0;
   export let onChange: (start: Date, due: Date) => void;
   export let startIndex: number;
   //   export let onFinalize: (width: number) => void;
