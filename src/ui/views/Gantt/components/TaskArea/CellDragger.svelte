@@ -11,6 +11,7 @@
   let initial: number | null;
   let change: number;
   let delta: number;
+  let isNegative: boolean;
 
   $: delta = -3;
 
@@ -48,10 +49,22 @@
       console.log("posting change");
 
       let startDate = new Date();
-      startDate.setDate(startDate.getDate() + startIndex);
+      startDate.setDate(
+        startDate.getDate() + startIndex + (isNegative ? change : 0)
+      );
+      console.log(
+        `${startDate.getDate()} + ${startIndex} + ${isNegative ? change : 0}`
+      );
 
       let dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + startIndex + Math.abs(change));
+      dueDate.setDate(
+        dueDate.getDate() + startIndex + (isNegative ? 0 : change)
+      );
+      console.log(
+        `${dueDate.getDate()} + ${startIndex} + ${
+          isNegative ? -1 * change : change
+        }`
+      );
 
       onChange(startDate, dueDate);
     }
@@ -72,22 +85,22 @@
 
       //   if (newWidth >= min) {
       //   Math.sign();
-      let isNegative = Math.sign(delta) == -1;
+      isNegative = Math.sign(delta) == -1;
       //   let offset = 0;
-      let offset = isNegative ? -1 : 1;
+      let offset = isNegative ? 0 : 1;
       //   console.log(`DELTA: ${delta} OFFSET: ${offset} IS BACK: ${delta >= -32}`);
 
-      if (delta >= 32 || isNegative) {
-        // console.log(`Q: ${delta / 32} CHANGE: ${Math.floor(delta / 32)}`);
-        change = Math.floor(delta / 32) + offset;
-        // console.log(newWidth);
-        // onChange(Math.floor(delta / 32));
+      //   if (delta >= 32 || isNegative) {
+      // console.log(`Q: ${delta / 32} CHANGE: ${Math.floor(delta / 32)}`);
+      change = Math.floor(delta / 32) + offset;
+      // console.log(newWidth);
+      // onChange(Math.floor(delta / 32));
 
-        // start = 0;
-        // initial = null;
-        //   } else if (delta >= -32) {
-        //     change = Math.floor(delta / 32) - offset;
-      }
+      // start = 0;
+      // initial = null;
+      //   } else if (delta >= -32) {
+      //     change = Math.floor(delta / 32) - offset;
+      //   }
       console.log(change);
       //   current = event.pageX;
       //   console.log(current);
