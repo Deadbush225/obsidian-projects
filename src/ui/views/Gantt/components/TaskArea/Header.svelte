@@ -85,12 +85,13 @@
   }
 
   :global(.gantt-header) {
+    min-width: fit-content;
     /* height: 30px; */
   }
 
   :global(#tasks-header) {
     position: sticky;
-    position: -webkit-sticky;
+    /* position: -webkit-sticky; */
     left: 0;
     justify-content: center;
     /* width: 20vw;

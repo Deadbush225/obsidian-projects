@@ -14,16 +14,23 @@
 
   $: delta;
 
-  function startResize(event: MouseEvent) {
+  function startResize(event: MouseEvent | TouchEvent) {
     console.log("START DRAG");
+
     // Unless we stop propagation, resizing will also drag the column.
     event.stopPropagation();
 
+    if (event instanceof TouchEvent) {
+      event = event.touches[0];
+    }
     start = event.pageX;
     initial = width;
   }
 
-  function stopResize(event: MouseEvent) {
+  function stopResize(event: MouseEvent | TouchEvent) {
+    if (event instanceof TouchEvent) {
+      event = event.touches[0];
+    }
     // console.log("STOPPING RESIZE");
     // console.log(`${start} : ${initial}`);
     // if (start && initial) {
@@ -54,7 +61,10 @@
     delta = 0;
   }
 
-  function resize(event: MouseEvent) {
+  function resize(event: MouseEvent | TouchEvent) {
+    if (event instanceof TouchEvent) {
+      event = event.touches[0];
+    }
     // console.log("RESIZE");
     // console.log(`${start} : ${initial}`);
 
@@ -95,7 +105,10 @@
   class="handle"
   class:visible={start}
   style="{position}: {delta * (position == 'right' ? -1 : 1)}px"
+  on:touchend={stopResize}
+  on:touchmove={resize}
   on:mousedown={startResize}
+  on:touchstart={startResize}
 />
 
 <style>

@@ -11,7 +11,7 @@
   export let onNew: (start: Date, due: Date) => void;
 </script>
 
-<VBoxLayout>
+<div class="vBoxLayout dragWrapper">
   <!-- <slot /> -->
   <!-- <VBoxLayout className="pinned"> -->
   <div class="pinned">
@@ -33,9 +33,19 @@
     <!-- <slot name="re" /> -->
     <!-- </div> -->
   </div>
-</VBoxLayout>
+</div>
 
 <style>
+  .dragWrapper {
+    /* .dragDisable { */
+    touch-action: none;
+    /* outline: 1px red solid; */
+  }
+  .vBoxLayout {
+    display: flex;
+    flex-direction: row;
+    min-width: fit-content;
+  }
   .event {
     position: relative;
     display: flex;

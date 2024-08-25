@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { isDragging_store } from "../stores/store";
+
   // export let width: number;
   let width = 1;
   //   let min = 0;
@@ -15,36 +17,37 @@
 
   $: delta = -3;
 
-  function startResize(event: MouseEvent) {
+  function startResize(event: MouseEvent | TouchEvent) {
     // console.log("CELL DRAGGER");
+
+    // console.log($isDragging_store);
+    isDragging_store.set(true);
     // Unless we stop propagation, resizing will also drag the column.
     event.stopPropagation();
+    // console.log(event.touches[0].pageX);
+
+    if (event instanceof TouchEvent) {
+      console.log("IT IS TOUCH");
+      event = event.touches[0];
+    }
 
     start = event.pageX;
     initial = width;
+    console.log(start);
   }
 
-  function stopResize(event: MouseEvent) {
-    // console.log("STOPPING RESIZE");
-    // console.log(`${start} : ${initial}`);
-    // if (start && initial) {
-    //   const delta = event.pageX - start;
-    //   //   const newWidth = initial + delta;
+  function stopResize(event: MouseEvent | TouchEvent) {
+    // event.stopPropagation();
+    // event.stopImmediatePropagation();
 
-    //   if (Math.abs(delta) >= 32) {
-    //     //   if (newWidth >= min) {
-    //     // console.log(Math.floor(delta / 32));
-    //     // onFinalize(newWidth); //<- dapat onFinalize
-    //     // onChange(Math.floor(delta / 32));
-    //     // onFinalize(width);
-    //     change = Math.floor(delta / 32);
-    //     console.log(change);
-    //     onChange(change);
-    //     //   }
-    //     // }
-    //   }
-    //   //   initial = null;
-    // }
+    // console.log("STOPPING");
+    // console.log($isDragging_store);
+    isDragging_store.set(false);
+    if (event instanceof TouchEvent) {
+      //   event: Touch = event;
+      event = event.touches[0];
+    }
+
     if (start && initial) {
       //   console.log("posting change");
 
@@ -74,7 +77,12 @@
     delta = -3;
   }
 
-  function resize(event: MouseEvent) {
+  function resize(event: MouseEvent | TouchEvent) {
+    if (event instanceof TouchEvent) {
+      //   event: Touch = event;
+
+      event = event.touches[0];
+    }
     // console.log("RESIZE");
     // console.log(`${start} : ${initial}`);
 
@@ -93,20 +101,33 @@
       //   if (delta >= 32 || isNegative) {
       // console.log(`Q: ${delta / 32} CHANGE: ${Math.floor(delta / 32)}`);
       change = Math.floor(delta / 32) + offset;
-      // console.log(newWidth);
-      // onChange(Math.floor(delta / 32));
-
-      // start = 0;
-      // initial = null;
-      //   } else if (delta >= -32) {
-      //     change = Math.floor(delta / 32) - offset;
-      //   }
-      //   console.log(change);
-      //   current = event.pageX;
-      //   console.log(current);
-      //   console.log(start);
+      console.log(change);
     }
   }
+
+  //   function touchResize(event: TouchEvent) {
+  //     if (event === undefined) {
+  //       return;
+  //     }
+
+  //     resize(event.touches[0]!);
+  //   }
+
+  //   function touchStartResize(event: TouchEvent) {
+  //     console.log("STARTING RESIZE");
+  //     if (event === undefined) {
+  //       return;
+  //     }
+
+  //     startResize(event.touches[0]!);
+  //   }
+  //   function touchStopResize(event: TouchEvent) {
+  //     if (event === undefined) {
+  //       return;
+  //     }
+
+  //     stopResize(event.touches[0]!);
+  //   }
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
@@ -116,6 +137,9 @@
   class:visible={start}
   style="left: {delta}px;"
   on:mousedown={startResize}
+  on:touchend={stopResize}
+  on:touchmove={resize}
+  on:touchstart={startResize}
 />
 
 <style>

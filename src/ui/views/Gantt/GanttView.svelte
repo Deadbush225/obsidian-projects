@@ -89,6 +89,12 @@
 
   let endDate: Date = currentDate;
   let monthBlocks: MonthBlock[] = get(monthBlocks_store);
+  //   let isDragging: boolean = get(isDragging_store);
+
+  //   $: {
+  //     console.log("IS DRAGGING CHANGED");
+  //     console.log(isDragging);
+  //   }
 
   $: console.log(`${daysViewLength}, ${endDate}`);
 
@@ -112,37 +118,39 @@
   //   $: daysViewLength;
 
   $: {
+    // console.log("regenerating");
     monthBlocks = [];
     daysViewLength = 0;
 
     let pointer = new Date();
 
-    let diffMonth = endDate.getMonth() - pointer.getMonth() + 1; // to make the end inclusive
+    let diffMonth = endDate.getMonth() - pointer.getMonth() + 1 + 1; // to make the end inclusive and empty buffer in the end
     let diffYear = (endDate.getFullYear() - pointer.getFullYear()) * 12;
     let diff = diffMonth + diffYear;
 
     // console.log(
     //   `${endDate.getMonth()} ${endDate.getFullYear()} - ${pointer.getMonth()} ${pointer.getFullYear()}`
     // );
-    // console.log(diffMonth);
+    // console.log(diffMonth)
     // console.log(diff);
 
     let i = 0;
 
-    console.log(diff);
-    if (diff == 1) {
-      console.log("NO DUE PROVIDED");
-      diff = 2;
-      endDate = new Date();
-      endDate.setDate(endDate.getDate() + 14);
-    }
+    // console.log(endDate);
+    // console.log(diff);
+    // if (diff == 1) {
+    //   console.log("NO DUE PROVIDED");
+    //   diff = 2;
+    //   endDate = new Date();
+    //   endDate.setDate(endDate.getDate() + 14);
+    // }
 
     while (i < diff) {
       console.log(`${pointer.toDateString()} : ${endDate.toDateString()}`);
-      if (pointer.getTime() >= endDate.getTime()) {
-        console.log("BREAKING");
-        break;
-      }
+      //   if (pointer.getTime() >= endDate.getTime()) {
+      //     console.log("BREAKING");
+      //     break;
+      //   }
       let currentMonth: number = pointer.getMonth();
       let currentYear: number = pointer.getFullYear();
 
@@ -201,6 +209,8 @@
   }
 </script>
 
+<!-- <div class="dragWrapper"> -->
+<!-- <div class="dragWrapper" class:dragDisable={$isDragging_store}> -->
 <ViewLayout>
   <ViewContent>
     <Header {width} onColumnResize={handleWidthChange} />
@@ -271,8 +281,11 @@
         </Button>
       </div>
     </GridRow>
+    <div class="endoccupant" />
   </ViewContent>
 </ViewLayout>
+
+<!-- </div> -->
 
 <style>
   /* cant's style slots */
@@ -295,6 +308,15 @@
     /* background-color: red; */
     flex: 0 0 auto;
   }
+
+  .endoccupant {
+    width: 2em;
+  }
+
+  /* .dragWrapper { */
+  /* position: relative; */
+  /* touch-action: none; */
+  /* } */
 
   /* div {
     display: flex;
