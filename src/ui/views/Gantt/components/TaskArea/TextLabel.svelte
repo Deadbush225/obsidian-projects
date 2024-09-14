@@ -9,16 +9,12 @@
   export let sourcePath: string;
   export let style: string = "";
 
+  //   console.log(value);
   //   const sourcePath = getContext<string>("sourcePath") ?? "";
 
   function useMarkdown(node: HTMLElement, value: string) {
-    // console.log("TextLabel");
-    // console.log(value);
-    // console.log(typeof value);
-    // console.log(sourcePath);
-    // console.log(typeof sourcePath);
-
     // MarkdownRenderer.render($app, value, node, sourcePath, $view);
+    console.log(`${sourcePath}, ${value}`);
     MarkdownRenderer.render($app, sourcePath, node, value, $view);
 
     return {

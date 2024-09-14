@@ -73,7 +73,11 @@
 
   $: ({ fields, records } = frame);
 
-  //   $: console.log(records);
+  //   $: {
+  //     console.log("Test");
+  //     console.table(records);
+  //     console.table(fields);
+  //   }
 
   $: fieldConfig = config?.fieldConfig ?? {};
 
@@ -146,7 +150,7 @@
     // }
 
     while (i < diff) {
-      console.log(`${pointer.toDateString()} : ${endDate.toDateString()}`);
+      //   console.log(`${pointer.toDateString()} : ${endDate.toDateString()}`);
       //   if (pointer.getTime() >= endDate.getTime()) {
       //     console.log("BREAKING");
       //     break;
@@ -164,8 +168,8 @@
       let block: MonthBlock = { monthYear: monthYear, daysRange: days };
       monthBlocks.push(block);
 
-      console.log("MONTHBLOCK");
-      console.log(monthBlocks);
+      //   console.log("MONTHBLOCK");
+      //   console.log(monthBlocks);
 
       // increase month by 1
       let month = pointer.getMonth();
@@ -207,6 +211,11 @@
       // let due = row.row["due"]
     });
   }
+
+  $: {
+    console.log("ROWS");
+    console.log(rows);
+  }
 </script>
 
 <!-- <div class="dragWrapper"> -->
@@ -214,7 +223,7 @@
 <ViewLayout>
   <ViewContent>
     <Header {width} onColumnResize={handleWidthChange} />
-    {#each rows as { rowId, row }, i (rowId)}
+    {#each rows as { rowId, row }, i}
       <EventRow
         onNew={(start, due) => {
           api.updateRecord(
@@ -267,6 +276,11 @@
               $app,
               project,
               (name, templatePath, project) => {
+                // console.log("ADDING RECORD");
+                // console.log(name);
+                // console.log(templatePath);
+                // console.log(project);
+                // console.table(fields);
                 api.addRecord(
                   createDataRecord(name, project),
                   fields,
