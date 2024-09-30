@@ -23,7 +23,13 @@
   <!-- {#if monthBlocks.length > 1} -->
   {#each $monthBlocks_store as month}
     <HBoxLayout className="monthBlock">
-      <div class="monthYear">{month.monthYear}</div>
+      <div class="monthYear">
+        {#if month.daysRange.length > 6}
+          {month.monthYear}
+          <!-- {:else} -->
+          <!-- {month.monthYear} -->
+        {/if}
+      </div>
       <VBoxLayout id="events-header">
         {#each month.daysRange as day}
           <div class="date">{day}</div>
@@ -52,6 +58,7 @@
 
   .monthYear {
     text-align: center;
+    flex-grow: 1;
   }
 
   :global(.monthBlock) {
