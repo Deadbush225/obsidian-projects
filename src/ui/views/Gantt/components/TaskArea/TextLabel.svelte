@@ -5,7 +5,8 @@
   //   import { getContext } from "svelte";
 
   export let value: string;
-  export let richText: boolean = false;
+  export let richText: boolean = true;
+  //   export let richText: boolean = false;
   export let sourcePath: string;
   export let style: string = "";
 
