@@ -20,7 +20,7 @@
     return {
       update(newValue: string) {
         node.empty();
-        MarkdownRenderer.render($app, sourcePath, node, value, $view);
+        MarkdownRenderer.render($app, sourcePath, node, newValue, $view);
       },
     };
   }
