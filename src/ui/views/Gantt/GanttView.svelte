@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { TFolder } from "obsidian";
+
   import {
     // DataFieldType,
     type DataFrame,
@@ -216,6 +218,50 @@
     console.log("ROWS");
     console.log(rows);
   }
+
+  function handleFileDrop(event: DragEvent) {
+    event.preventDefault();
+    console.log("DROP...");
+
+    // const file = event.dataTransfer?.types;
+    const file = event.dataTransfer?.getData("text/html");
+    console.log(file);
+    if (!file) {
+      return;
+    }
+
+    if (project.dataSource.kind != "folder") {
+      return;
+    }
+
+    console.log("HERE");
+
+    const projectPath = `${project.dataSource.config.path}`;
+    console.log(projectPath);
+
+    const folderPath = `${projectPath}/done`;
+    const folderExist = $app.vault.getAbstractFileByPath(folderPath) as TFolder;
+
+    if (!folderExist) {
+      $app.vault.createFolder(folderPath).then(() => {
+        console.log(`Folder ${folderPath} created successfully`);
+      });
+    }
+
+    const reg = /data-href=".*?"/;
+    const match = file.match(reg);
+    // if (match) {
+    const dataHref = match[0].replace(/data-href="(.*?)"/, "$1");
+    console.log(dataHref);
+    // }
+
+    const filePath = $app.vault.getAbstractFileByPath(dataHref);
+    console.log(filePath);
+
+    const dest = folderPath + "/" + filePath?.name;
+
+    $app.vault.rename(filePath, dest);
+  }
 </script>
 
 <ViewLayout>
@@ -294,8 +340,14 @@
           <div>Add note</div>
         </Button>
       </div>
-      <Button>Test</Button>
     </GridRow>
+    <div
+      on:dragover={(event) => event.preventDefault()}
+      on:drop={handleFileDrop}
+      style="border: 2px dashed var(--background-modifier-border); padding: 10px; text-align: center;"
+    >
+      Drag files here to print their path
+    </div>
     <div class="endoccupant" />
   </ViewContent>
 </ViewLayout>
