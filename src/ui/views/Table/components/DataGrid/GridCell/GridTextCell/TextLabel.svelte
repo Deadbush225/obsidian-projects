@@ -8,13 +8,16 @@
   export let richText: boolean = false;
 
   //   console.log("TextLabel");
-  //   console.log(value);
+  // console.log(value);
 
   const sourcePath = getContext<string>("sourcePath") ?? "";
+  //   console.log(`VALUE : ${value}`);
+  //   console.log(`SOURCE PATH : ${sourcePath}`);
 
   function useMarkdown(node: HTMLElement, value: string) {
     MarkdownRenderer.render($app, value, node, sourcePath, $view);
 
+    console.log(`${value}, ${sourcePath}`);
     return {
       update(newValue: string) {
         node.empty();

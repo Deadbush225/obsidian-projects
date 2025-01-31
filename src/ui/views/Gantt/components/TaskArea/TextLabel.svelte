@@ -5,22 +5,25 @@
   //   import { getContext } from "svelte";
 
   export let value: string;
-  export let richText: boolean = true;
-  //   export let richText: boolean = false;
+  export let richText: boolean = false;
   export let sourcePath: string;
   export let style: string = "";
 
-  //   console.log(value);
   //   const sourcePath = getContext<string>("sourcePath") ?? "";
+  //   console.log(`VALUE : ${value}`);
+  //   console.log(`SOURCE PATH : ${sourcePath}`);
 
   function useMarkdown(node: HTMLElement, value: string) {
     // MarkdownRenderer.render($app, value, node, sourcePath, $view);
-    console.log(`${sourcePath}, ${value}`);
+
+    // console.log(`${value}, ${sourcePath}`);
     MarkdownRenderer.render($app, sourcePath, node, value, $view);
 
     return {
       update(newValue: string) {
         node.empty();
+        // MarkdownRenderer.render($app, newValue, node, sourcePath, $view);
+        // console.log(`${value}, ${sourcePath}`);
         MarkdownRenderer.render($app, sourcePath, node, newValue, $view);
       },
     };

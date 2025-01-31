@@ -2,7 +2,7 @@
   import {
     // DataFieldType,
     type DataFrame,
-    // type DataRecord,
+    type DataRecord,
   } from "src/lib/dataframe/dataframe";
   import { createDataRecord } from "src/lib/dataApi";
   //   import { i18n } from "src/lib/stores/i18n";
@@ -218,24 +218,23 @@
   }
 </script>
 
-<!-- <div class="dragWrapper"> -->
-<!-- <div class="dragWrapper" class:dragDisable={$isDragging_store}> -->
 <ViewLayout>
   <ViewContent>
     <Header {width} onColumnResize={handleWidthChange} />
     {#each rows as { rowId, row }, i}
       <EventRow
         onNew={(start, due) => {
+          const updatedValues = produce(row, (draft) => {
+            draft["due"] = due;
+            if (start) {
+              draft["start"] = start;
+            }
+          });
+
           api.updateRecord(
             {
               id: rowId,
-              values: produce(row, (draft) => {
-                draft["due"] = due;
-                if (start) {
-                  draft["start"] = start;
-                }
-                return draft;
-              }),
+              values: updatedValues,
             },
             fields
           );
@@ -251,15 +250,16 @@
           slot="event"
           {row}
           onChange={(change, field) => {
+            const updatedValues = produce(row, (draft) => {
+              draft[field] = new Date(
+                draft[field].setDate(draft[field].getDate() + change)
+              );
+            });
+
             api.updateRecord(
               {
                 id: rowId,
-                values: produce(row, (draft) => {
-                  draft[field] = new Date(
-                    draft[field].setDate(draft[field].getDate() + change)
-                  );
-                  return draft;
-                }),
+                values: updatedValues,
               },
               fields
             );
