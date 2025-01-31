@@ -294,6 +294,7 @@
           <div>Add note</div>
         </Button>
       </div>
+      <Button>Test</Button>
     </GridRow>
     <div class="endoccupant" />
   </ViewContent>
