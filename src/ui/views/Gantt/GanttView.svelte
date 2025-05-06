@@ -322,13 +322,12 @@
               $app,
               project,
               (name, templatePath, project) => {
-                // console.log("ADDING RECORD");
-                // console.log(name);
-                // console.log(templatePath);
-                // console.log(project);
-                // console.table(fields);
+                const start = new Date();
+                const due = new Date();
+                due.setDate(start.getDate() + 1);
+
                 api.addRecord(
-                  createDataRecord(name, project),
+                  createDataRecord(name, project, { start, due }),
                   fields,
                   templatePath
                 );
@@ -346,7 +345,7 @@
       on:drop={handleFileDrop}
       style="border: 2px dashed var(--background-modifier-border); padding: 10px; text-align: center;"
     >
-      Drag files here to print their path
+      Drag tasks here when they're done.
     </div>
     <div class="endoccupant" />
   </ViewContent>
