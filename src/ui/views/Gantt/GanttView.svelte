@@ -345,7 +345,7 @@
       on:drop={handleFileDrop}
       style="border: 2px dashed var(--background-modifier-border); padding: 10px; text-align: center; position: fixed; width: 100%;"
     >
-      Drag tasks here when they're done.
+      Drag tasks here when they're done
     </div>
     <div class="endoccupant" />
   </ViewContent>
