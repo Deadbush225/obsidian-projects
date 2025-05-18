@@ -1,46 +1,21 @@
 <script lang="ts">
   import { TFolder } from "obsidian";
 
-  import {
-    // DataFieldType,
-    type DataFrame,
-    type DataRecord,
-  } from "src/lib/dataframe/dataframe";
+  import type { DataFrame, DataValue } from "src/lib/dataframe/dataframe";
   import { createDataRecord } from "src/lib/dataApi";
   //   import { i18n } from "src/lib/stores/i18n";
   import { app } from "src/lib/stores/obsidian";
   import type { ViewApi } from "src/lib/viewApi";
   import { CreateNoteModal } from "src/ui/modals/createNoteModal";
-  // import { EditNoteModal } from "src/ui/modals/editNoteModal";
 
-  //   import type {
-  //     GridColDef,
-  //     GridRowProps,
-  //   } from "./components/DataGrid/dataGrid";
-  //   import DataGrid from "./components/DataGrid/DataGrid.svelte";
-  //   import SwitchSelect from "./components/SwitchSelect/SwitchSelect.svelte";
   import type { CustomGridRowProps, MonthBlock, GanttConfig } from "./types";
 
-  import {
-    ViewContent,
-    // ViewHeader,
-    ViewLayout,
-    // ViewToolbar,
-  } from "src/ui/components/Layout";
-  //   import { ConfigureFieldModal } from "src/ui/modals/configureField";
-  //   import { settings } from "src/lib/stores/settings";
-  //   import { sortFields } from "./helpers";
+  import { ViewContent, ViewLayout } from "src/ui/components/Layout";
   import type { ProjectDefinition } from "src/settings/settings";
-  //   import { CreateFieldModal } from "src/ui/modals/createFieldModal";
-  //   import { Icon } from "obsidian-svelte";
-  //   import { TextLabel } from "./components/DataGrid/GridCell/GridTextCell";
-  //   import { fieldIcon } from "../helpers";
 
   export let project: ProjectDefinition;
   export let frame: DataFrame;
-  //   export let readonly: boolean;
   export let api: ViewApi;
-  //   export let getRecordColor: (record: DataRecord) => string | null;
 
   export let config: GanttConfig | undefined;
   export let onConfigChange: (cfg: GanttConfig) => void;
@@ -53,6 +28,7 @@
   import Event from "./components/TaskArea/Event.svelte";
   import { produce } from "immer";
   import { Button, Icon } from "obsidian-svelte";
+  import { Optional } from "obsidian-projects-types";
 
   import { get } from "svelte/store";
 
@@ -62,7 +38,6 @@
     monthBlocks_store,
     daysViewLength_store,
   } from "./components/stores/store";
-  //   import { monthBlocks_store, daysViewLength_store } from "stores";
 
   export let rows;
 
@@ -71,15 +46,7 @@
     onConfigChange(cfg);
   }
 
-  //   type GridRowId = string;
-
   $: ({ fields, records } = frame);
-
-  //   $: {
-  //     console.log("Test");
-  //     console.table(records);
-  //     console.table(fields);
-  //   }
 
   $: fieldConfig = config?.fieldConfig ?? {};
 
@@ -95,14 +62,52 @@
 
   let endDate: Date = currentDate;
   let monthBlocks: MonthBlock[] = get(monthBlocks_store);
-  //   let isDragging: boolean = get(isDragging_store);
 
-  //   $: {
-  //     console.log("IS DRAGGING CHANGED");
-  //     console.log(isDragging);
-  //   }
+  function handleEventRowNew(row, rowId, fields, start: Date, due: Date) {
+    const updatedValues: Record<string, Optional<DataValue>> = produce(
+      row,
+      (draft) => {
+        draft["due"] = due;
+        if (start) draft["start"] = start;
+      }
+    );
 
-  $: console.log(`${daysViewLength}, ${endDate}`);
+    api.updateRecord(
+      {
+        id: rowId,
+        values: updatedValues,
+      },
+      fields
+    );
+  }
+
+  function handleEventChange(
+    row,
+    rowId,
+    fields,
+    change: number,
+    field: string
+  ) {
+    const updatedValues: Record<string, Optional<DataValue>> = produce(
+      row,
+      (draft) => {
+        const current = draft[field];
+        if (current instanceof Date) {
+          draft[field] = new Date(
+            current.getTime() + change * 24 * 60 * 60 * 1000
+          );
+        }
+      }
+    );
+
+    api.updateRecord(
+      {
+        id: rowId,
+        values: updatedValues,
+      },
+      fields
+    );
+  }
 
   function handleWidthChange(field: string = "Tasks Column", width: number) {
     saveConfig({
@@ -119,10 +124,6 @@
 
   $: endDate;
 
-  //   $: monthBlocks;
-
-  //   $: daysViewLength;
-
   $: {
     // console.log("regenerating");
     monthBlocks = [];
@@ -134,29 +135,9 @@
     let diffYear = (endDate.getFullYear() - pointer.getFullYear()) * 12;
     let diff = diffMonth + diffYear;
 
-    // console.log(
-    //   `${endDate.getMonth()} ${endDate.getFullYear()} - ${pointer.getMonth()} ${pointer.getFullYear()}`
-    // );
-    // console.log(diffMonth)
-    // console.log(diff);
-
     let i = 0;
 
-    // console.log(endDate);
-    // console.log(diff);
-    // if (diff == 1) {
-    //   console.log("NO DUE PROVIDED");
-    //   diff = 2;
-    //   endDate = new Date();
-    //   endDate.setDate(endDate.getDate() + 14);
-    // }
-
     while (i < diff) {
-      //   console.log(`${pointer.toDateString()} : ${endDate.toDateString()}`);
-      //   if (pointer.getTime() >= endDate.getTime()) {
-      //     console.log("BREAKING");
-      //     break;
-      //   }
       let currentMonth: number = pointer.getMonth();
       let currentYear: number = pointer.getFullYear();
 
@@ -170,9 +151,6 @@
       let block: MonthBlock = { monthYear: monthYear, daysRange: days };
       monthBlocks.push(block);
 
-      //   console.log("MONTHBLOCK");
-      //   console.log(monthBlocks);
-
       // increase month by 1
       let month = pointer.getMonth();
       if (month == 12) {
@@ -181,7 +159,6 @@
       } else {
         pointer.setMonth(month + 1);
       }
-      //   console.log("RESETING DATE");
       pointer.setDate(1);
 
       monthBlocks_store.set(monthBlocks);
@@ -189,28 +166,19 @@
 
       ++i;
     }
-    // console.log("MATCH");
   }
 
   $: {
-    // console.log("CHECKING DATERANGE CHANGE");
     endDate = new Date();
     rows.forEach((row) => {
-      //   console.log(row.row["due"]);
       if (!row.row["due"]) {
         return;
       }
       let rowDue: Date = new Date(row.row["due"]);
-      //   if (!rowDue) {
-      //     return;
-      //   }
 
       if (rowDue.getTime() > endDate.getTime()) {
-        // console.log("REPLACING");
         endDate = rowDue;
       }
-      //   console.log(endDate);
-      // let due = row.row["due"]
     });
   }
 
@@ -223,7 +191,6 @@
     event.preventDefault();
     console.log("DROP...");
 
-    // const file = event.dataTransfer?.types;
     const file = event.dataTransfer?.getData("text/html");
     console.log(file);
     if (!file) {
@@ -250,15 +217,25 @@
 
     const reg = /data-href=".*?"/;
     const match = file.match(reg);
-    // if (match) {
-    const dataHref = match[0].replace(/data-href="(.*?)"/, "$1");
-    console.log(dataHref);
-    // }
+
+    let dataHref: string | undefined = undefined;
+    if (match) {
+      dataHref = match[0].replace(/data-href="(.*?)"/, "$1");
+      console.log(dataHref);
+    } else {
+      console.log("No data-href found in dropped file.");
+      return;
+    }
 
     const filePath = $app.vault.getAbstractFileByPath(dataHref);
     console.log(filePath);
 
-    const dest = folderPath + "/" + filePath?.name;
+    if (!filePath) {
+      console.log("File not found:", dataHref);
+      return;
+    }
+
+    const dest = folderPath + "/" + filePath.name;
 
     $app.vault.rename(filePath, dest);
   }
@@ -269,22 +246,8 @@
     <Header {width} onColumnResize={handleWidthChange} />
     {#each rows as { rowId, row }, i}
       <EventRow
-        onNew={(start, due) => {
-          const updatedValues = produce(row, (draft) => {
-            draft["due"] = due;
-            if (start) {
-              draft["start"] = start;
-            }
-          });
-
-          api.updateRecord(
-            {
-              id: rowId,
-              values: updatedValues,
-            },
-            fields
-          );
-        }}
+        onNew={(start, due) =>
+          handleEventRowNew(row, rowId, fields, start, due)}
       >
         <GridCell slot="num">
           {i + 1}
@@ -295,21 +258,8 @@
         <Event
           slot="event"
           {row}
-          onChange={(change, field) => {
-            const updatedValues = produce(row, (draft) => {
-              draft[field] = new Date(
-                draft[field].setDate(draft[field].getDate() + change)
-              );
-            });
-
-            api.updateRecord(
-              {
-                id: rowId,
-                values: updatedValues,
-              },
-              fields
-            );
-          }}
+          onChange={(change, field) =>
+            handleEventChange(row, rowId, fields, change, field)}
         />
       </EventRow>
     {/each}
@@ -341,11 +291,12 @@
       </div>
     </GridRow>
     <div
+      class="drop-area"
       on:dragover={(event) => event.preventDefault()}
       on:drop={handleFileDrop}
-      style="border: 2px dashed var(--background-modifier-border); padding: 10px; text-align: center; position: fixed; width: 100%;"
+      style=""
     >
-      Drag tasks here when they're done
+      Drag tasks here when they're done.
     </div>
     <div class="endoccupant" />
   </ViewContent>
@@ -354,6 +305,14 @@
 <!-- </div> -->
 
 <style>
+  .drop-area {
+    border: 2px dashed var(--background-modifier-border);
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+  }
+
   /* cant's style slots */
   .task {
     /* width: 20vw; */
@@ -378,50 +337,6 @@
   .endoccupant {
     width: 2em;
   }
-
-  /* .dragWrapper { */
-  /* position: relative; */
-  /* touch-action: none; */
-  /* } */
-
-  /* div {
-    display: flex;
-  } */
-
-  /* styled as a column header*/
-  /* span {
-    position: sticky;
-    top: 0;
-    z-index: 6;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-align: center;
-
-    background-color: var(--background-secondary);
-    border-right: 1px solid var(--background-modifier-border);
-    border-left-color: var(--background-modifier-border);
-    border-bottom: 1px solid var(--background-modifier-border);
-
-    height: fit-content;
-    min-height: 30px;
-
-    color: var(--text-muted);
-    font-weight: 500;
-    padding: 0 12px;
-
-    cursor: default;
-  }
-
-  span:focus {
-    border-radius: var(--button-radius);
-    box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
-  }
-
-  span:hover {
-    color: var(--text-normal);
-  } */
 
   :global(:root) {
     --gt-row-height: 1.3em;
