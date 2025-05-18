@@ -29,7 +29,7 @@ $release_notes = "./release_notes.md"
 # Write-Host "Release notes for " $version "built"
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━ CREATE RELEASE ━━━━━━━━━━━━━━━━━━━━━━━━━ #
-$version = "1.17.6"
+$version = "1.17.7"
 $arguments = @(
     "release create",
     $version,

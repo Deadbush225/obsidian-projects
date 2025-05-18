@@ -327,7 +327,7 @@
                 due.setDate(start.getDate() + 1);
 
                 api.addRecord(
-                  createDataRecord(name, project, { start, due }),
+                  createDataRecord(name, project, { name, start, due }),
                   fields,
                   templatePath
                 );
@@ -343,7 +343,7 @@
     <div
       on:dragover={(event) => event.preventDefault()}
       on:drop={handleFileDrop}
-      style="border: 2px dashed var(--background-modifier-border); padding: 10px; text-align: center;"
+      style="border: 2px dashed var(--background-modifier-border); padding: 10px; text-align: center; position: fixed; width: 100%;"
     >
       Drag tasks here when they're done.
     </div>
