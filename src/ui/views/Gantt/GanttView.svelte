@@ -277,7 +277,14 @@
                 due.setDate(start.getDate() + 1);
 
                 api.addRecord(
-                  createDataRecord(name, project, { name, start, due }),
+                  createDataRecord(name, project, {
+                    name:
+                      project.dataSource.kind === "folder"
+                        ? project.dataSource.config.path + "/" + name
+                        : name,
+                    start,
+                    due,
+                  }),
                   fields,
                   templatePath
                 );
