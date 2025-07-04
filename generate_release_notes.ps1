@@ -29,7 +29,12 @@ $release_notes = "./release_notes.md"
 # Write-Host "Release notes for " $version "built"
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━ CREATE RELEASE ━━━━━━━━━━━━━━━━━━━━━━━━━ #
-$version = "1.17.8"
+# Read the version from package.json
+$packageJsonPath = "./package.json"
+$packageJsonContent = Get-Content -Path $packageJsonPath -Raw | ConvertFrom-Json
+$version = $packageJsonContent.version
+$beta = $true  # Set this to $true or $false as needed
+
 $arguments = @(
     "release create",
     $version,
@@ -43,5 +48,9 @@ $arguments = @(
     "--repo", 
     "Deadbush225/obsidian-projects"
 )
+
+if ($beta) {
+    $arguments += "--prerelease"
+}
 Start-Process "gh" -ArgumentList ($arguments -join " ") -NoNewWindow -Wait
 Write-Host "Release created"

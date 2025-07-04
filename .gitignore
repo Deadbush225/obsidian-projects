@@ -20,5 +20,7 @@ data.json
 
 yarn-error.log
 
-# scripts
+# local - Deadbush225
 release_notes.md
+notes.md
+copy_to_plugin.ps1
