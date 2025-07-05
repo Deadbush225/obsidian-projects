@@ -8,6 +8,8 @@
   export let richText: boolean = false;
   export let sourcePath: string;
   export let style: string = "";
+  console.log("V: " + value);
+  console.log("S: " + sourcePath);
 
   //   const sourcePath = getContext<string>("sourcePath") ?? "";
   //   console.log(`VALUE : ${value}`);

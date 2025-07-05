@@ -40,7 +40,53 @@
   } from "./components/stores/store";
 
   export let rows;
+  /* ---------------------------------------------------------------- */
 
+  import { App, Modal } from "obsidian";
+  import FileConflict from "./components/FileConflict.svelte";
+
+  export class FileConflictModal extends Modal {
+    component?: FileConflict;
+
+    constructor(
+      app: App,
+      readonly fileName: string,
+      readonly onOverwrite: () => void,
+      readonly onRename: () => void,
+      readonly onCancel: () => void
+    ) {
+      super(app);
+    }
+
+    onOpen() {
+      this.component = new FileConflict({
+        target: this.contentEl,
+        props: {
+          fileName: this.fileName,
+          onOverwrite: () => {
+            this.onOverwrite();
+            this.close();
+          },
+          onRename: () => {
+            this.onRename();
+            this.close();
+          },
+          onCancel: () => {
+            this.onCancel();
+            this.close();
+          },
+        },
+      });
+    }
+
+    onClose() {
+      if (this.component) {
+        this.component.$destroy();
+      }
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
   function saveConfig(cfg: GanttConfig) {
     config = cfg;
     onConfigChange(cfg);
@@ -237,7 +283,44 @@
 
     const dest = folderPath + "/" + filePath.name;
 
-    $app.vault.rename(filePath, dest);
+    // Check if destination file already exists
+    const destFile = $app.vault.getAbstractFileByPath(dest);
+
+    if (destFile) {
+      // File conflict! Show modal
+      new FileConflictModal(
+        $app,
+        filePath.name,
+        // Overwrite
+        () => {
+          $app.vault.delete(destFile).then(() => {
+            $app.vault.rename(filePath, dest);
+          });
+        },
+        // Rename with suffix
+        () => {
+          // Find a suitable new name by adding (1), (2), etc.
+          let newName = filePath.name;
+          const baseName = filePath.basename;
+          const ext = filePath.extension;
+          let counter = 1;
+
+          while ($app.vault.getAbstractFileByPath(`${folderPath}/${newName}`)) {
+            newName = `${baseName} (${counter}).${ext}`;
+            counter++;
+          }
+
+          $app.vault.rename(filePath, `${folderPath}/${newName}`);
+        },
+        // Cancel
+        () => {
+          // Do nothing
+        }
+      ).open();
+    } else {
+      // No conflict, proceed with the move
+      $app.vault.rename(filePath, dest);
+    }
   }
 </script>
 
@@ -253,7 +336,11 @@
           {i + 1}
         </GridCell>
         <div slot="task" class="task" style="width:{width + 1}px">
-          <TextLabel value={rowId} sourcePath={row["name"]} richText={true} />
+          <TextLabel
+            value={row["name"]}
+            sourcePath={row["name"]}
+            richText={true}
+          />
         </div>
         <Event
           slot="event"
@@ -282,8 +369,7 @@
                       project.dataSource.kind === "folder"
                         ? project.dataSource.config.path + "/" + name
                         : name,
-                    start,
-                    due,
+                    // displayName: name, // If still not displaying, Add a separate field for display
                   }),
                   fields,
                   templatePath
