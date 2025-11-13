@@ -28,7 +28,7 @@
   import Event from "./components/TaskArea/Event.svelte";
   import { produce } from "immer";
   import { Button, Icon } from "obsidian-svelte";
-  import { Optional } from "obsidian-projects-types";
+  import type { Optional } from "obsidian-projects-types";
 
   import { get } from "svelte/store";
 
@@ -250,10 +250,12 @@
     console.log("HERE");
 
     const projectPath = `${project.dataSource.config.path}`;
-    console.log(projectPath);
+    console.log("Project path: " + projectPath);
 
     const folderPath = `${projectPath}/done`;
+    console.log("Folder path: " + folderPath);
     const folderExist = $app.vault.getAbstractFileByPath(folderPath) as TFolder;
+    console.log("FolderExist: " + folderExist);
 
     if (!folderExist) {
       $app.vault.createFolder(folderPath).then(() => {
@@ -359,8 +361,8 @@
               $app,
               project,
               (name, templatePath, project) => {
-                const start = new Date();
-                const due = new Date();
+                let start = new Date();
+                let due = new Date();
                 due.setDate(start.getDate() + 1);
 
                 api.addRecord(
@@ -369,6 +371,8 @@
                       project.dataSource.kind === "folder"
                         ? project.dataSource.config.path + "/" + name
                         : name,
+                    start: `${start.toDateString()}`,
+                    due: `${due.toDateString()}`,
                     // displayName: name, // If still not displaying, Add a separate field for display
                   }),
                   fields,
