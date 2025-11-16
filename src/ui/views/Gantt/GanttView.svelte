@@ -328,7 +328,7 @@
 
 <ViewLayout>
   <ViewContent>
-    <Header {width} onColumnResize={handleWidthChange} />
+    <Header {width} onColumnResize={handleWidthChange} {handleFileDrop} />
     {#each rows as { rowId, row }, i}
       <EventRow
         onNew={(start, due) =>
@@ -387,14 +387,14 @@
         </Button>
       </div>
     </GridRow>
-    <div
+    <!-- <div
       class="drop-area"
       on:dragover={(event) => event.preventDefault()}
       on:drop={handleFileDrop}
       style=""
     >
       Drag tasks here when they're done.
-    </div>
+    </div> -->
     <div class="endoccupant" />
   </ViewContent>
 </ViewLayout>
@@ -406,7 +406,8 @@
     border: 2px dashed var(--background-modifier-border);
     padding: 10px;
     text-align: center;
-    position: fixed;
+    position: sticky;
+    left: 0;
     width: 100%;
   }
 

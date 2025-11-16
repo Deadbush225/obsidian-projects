@@ -7,52 +7,58 @@
 
   export let width: number;
   export let onColumnResize: (field: string, width: number) => void;
-
+  export let handleFileDrop: (event: DragEvent) => void;
   //   const dispatch = createEventDispatcher();
-
+  // addEventListener("dragover", (event) => {
+  //   event.preventDefault();
+  // });
+  // addEventListener("drop", (event) => {
+  //   console.log("DROP EVENT...");
+  //   if (event instanceof DragEvent) {
+  //     handleFileDrop(event);
+  //   }
+  // });
   //   function onResize();
 </script>
 
 <!-- <div class="header vBoxLayout"> -->
 <VBoxLayout className="gantt-header">
   <VBoxLayout id="tasks-header">
-    <GridCell />
+    <GridCell {handleFileDrop}>
+      <!-- trash icon here -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="svg-icon lucide-trash-2"
+      >
+        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+        <g
+          id="SVGRepo_tracerCarrier"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <g id="SVGRepo_iconCarrier">
+          <path
+            d="M3 6h18M9 6V4a2 2 0 0 1 4 0v2M4 6h16M4 6v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      </svg>
+    </GridCell>
     <VBoxLayout
       style={`width: ${width}px`}
       className="flex-center-horizontally"
     >
       <div class="flex-center-vertically">Tasks</div>
-      <!-- <div
-        on:click={() => {
-          dispatch("addTask");
-        }}
-        class="gt-addTask clickable-icon"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="svg-icon lucide-palette"
-          ><g id="SVGRepo_bgCarrier" stroke-width="0" /><g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          /><g id="SVGRepo_iconCarrier">
-            <path
-              d="M7 12L12 12M12 12L17 12M12 12V7M12 12L12 17"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </g></svg
-        >
-      </div> -->
     </VBoxLayout>
     <Resizer
       {width}
@@ -106,14 +112,6 @@
 
   :global(#events-header) {
     display: flex;
-  }
-
-  .gt-addTask {
-    /* height: 10px; */
-    /* height: 100%; */
-    aspect-ratio: 1/1;
-    position: absolute;
-    right: 0px;
   }
 
   div {
