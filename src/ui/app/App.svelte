@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   import { createProject } from "src/lib/dataApi";
   import { api } from "src/lib/stores/api";
@@ -16,8 +16,8 @@
   import DataFrameProvider from "./DataFrameProvider.svelte";
   import type { ProjectId, ViewId } from "src/settings/settings";
 
-  // Use Obsidian's MarkdownRenderer and TFile for type assertions
-  import { MarkdownRenderer, TFile } from "obsidian";
+  // Use Obsidian's MarkdownRenderer, MarkdownView and TFile for rendering into a real view
+  import { MarkdownRenderer, TFile, MarkdownView } from "obsidian";
 
   export let projectId: ProjectId | undefined;
   export let viewId: ViewId | undefined;
@@ -56,6 +56,69 @@
       ).open();
     }
   });
+
+  let previewEl: HTMLElement | null = null;
+  let _previewClickHandler: ((e: MouseEvent) => void) | null = null;
+
+  async function renderHomePreview() {
+    const path = "home.md";
+    let existing = $app.vault.getAbstractFileByPath(path);
+    let file: TFile;
+    if (!existing || !(existing instanceof TFile)) {
+      file = await $app.vault.create(path, "# Home\n\nWelcome to your home note.");
+    } else {
+      file = existing as TFile;
+    }
+
+    const content = await $app.vault.read(file);
+
+  if (!previewEl) return;
+
+    // Use MarkdownRenderer with a MarkdownView context if available.
+    try {
+      // If we have a MarkdownView in the workspace, use it so links and embeds work.
+      const activeMdView = $app.workspace.getActiveViewOfType(MarkdownView) as MarkdownView | null;
+      await (MarkdownRenderer as any).render($app, content, previewEl, path, activeMdView || null);
+    } catch (e) {
+      // Fallback: render escaped content into previewEl
+      previewEl.innerHTML = `<pre>${content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>`;
+    }
+
+    // Attach a delegated click handler so links work even if MarkdownRenderer
+    // didn't wire up the component context. This handles both internal vault
+    // links and external links.
+    if (_previewClickHandler) previewEl.removeEventListener("click", _previewClickHandler);
+    _previewClickHandler = function (ev: MouseEvent) {
+      const target = ev.target as HTMLElement | null;
+      if (!target) return;
+      const a = target.closest("a") as HTMLAnchorElement | null;
+      if (!a) return;
+      const href = a.getAttribute("href") || a.getAttribute("data-href") || a.getAttribute("data-path");
+      if (!href) return;
+      ev.preventDefault();
+      // External link
+      if (/^https?:\/\//.test(href) || href.startsWith("mailto:") || href.startsWith("http")) {
+        window.open(href, "_blank");
+        return;
+      }
+      // Internal link: try to open via Obsidian workspace
+      try {
+        // openLinkText resolves internal wikilinks and file paths
+        $app.workspace.openLinkText(href, "", true);
+      } catch (err) {
+        console.warn("Failed to open internal link", href, err);
+      }
+    };
+    previewEl.addEventListener("click", _previewClickHandler);
+  }
+
+  onMount(() => {
+    renderHomePreview();
+  });
+
+  onDestroy(() => {
+    if (previewEl && _previewClickHandler) previewEl.removeEventListener("click", _previewClickHandler);
+  });
 </script>
 
 <!--
@@ -91,38 +154,7 @@
     {/if}
   </div>
   <div class="home-note-preview">
-    {#await (async () => {
-      const path = "home.md";
-      // getAbstractFileByPath returns a TAbstractFile; narrow to TFile where needed
-      let existing = $app.vault.getAbstractFileByPath(path);
-      let file;
-      if (!existing || !(existing instanceof TFile)) {
-        file = await $app.vault.create(path, "# Home\n\nWelcome to your home note.");
-      } else {
-        file = existing;
-      }
-
-      const content = await $app.vault.read(file);
-      console.log("Content:", content);
-
-      // Render markdown to HTML using Obsidian's MarkdownRenderer,
-      // otherwise fall back to escaped plain text.
-      const container = document.createElement("div");
-      try {
-        // MarkdownRenderer.render returns a Promise<void>
-        await MarkdownRenderer.render($app, content, container, path, null);
-        return container.innerHTML;
-      } catch (e) {
-        // ignore and fall back to plain text
-      }
-      return `<pre>${content
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")}</pre>`;
-    })() then html}
-      <div class="note-preview" data-path="home.md">
-        {@html html}
-      </div>
-    {/await}
+    <div class="note-preview" data-path="home.md" bind:this={previewEl}></div>
   </div>
 </div>
 
